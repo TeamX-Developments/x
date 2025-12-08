@@ -25,20 +25,22 @@
 
 <script>
 async function loadProgress() {
-  const req = await fetch("https://24.3.0.40:3001/");
-  const data = await req.json();
+  try {
+    const req = await fetch("https://24.3.0.40:3001/", { method: "GET" });
+    const data = await req.json();
 
-  document.getElementById("progress").innerHTML = `
-    <h2>${data.version}</h2>
-    <p>${data.message}</p>
-  `;
+    document.getElementById("progress").innerHTML = `
+      <h2>${data.version}</h2>
+      <p>${data.message}</p>
+    `;
+  } catch (e) {
+    document.getElementById("progress").innerHTML = "Unable to load progress.";
+  }
 }
 
 loadProgress();
 setInterval(loadProgress, 10000);
 </script>
-
-
 
 </body>
 </html>
