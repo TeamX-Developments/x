@@ -6,91 +6,56 @@
   <title>The X Project | Progress</title>
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: #eee;
-      margin: 0;
-      padding: 0;
-    }
-
-    header {
-      background: #202020;
-      padding: 2rem;
-      text-align: center;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 2.4rem;
-    }
-
-    main {
-      max-width: 900px;
-      margin: auto;
-      padding: 2rem;
-      line-height: 1.6;
-    }
-
-    .card {
-      background: #1b1b1b;
-      padding: 1.4rem;
-      border-radius: 6px;
-      border: 1px solid #333;
-      margin-bottom: 1.5rem;
-    }
-
-    footer {
-      text-align: center;
-      background: #202020;
-      padding: 1rem;
-      margin-top: 2rem;
-      color: #aaa;
-      font-size: 0.9rem;
-    }
+    body { background:#111; color:#eee; font-family:Arial; margin:0; }
+    header { background:#202020; padding:2rem; text-align:center; }
+    main { max-width:800px; margin:auto; padding:2rem; }
+    .card { background:#1b1b1b; padding:1.4rem; border-radius:6px; border:1px solid #333; }
   </style>
 </head>
 
 <body>
-  <header>
-    <h1>The X Project</h1>
-    <p>Progress Tracker</p>
-  </header>
+<header>
+  <h1>The X Project</h1>
+  <p>Progress Tracker</p>
+</header>
 
-  <main>
-    <div class="card" id="currentProgress">
-      <h2>Loading progress...</h2>
-    </div>
-  </main>
+<main>
+  <div class="card" id="progress">Loading…</div>
+</main>
 
-  <footer>
-    &copy; 2025 The X Project
-  </footer>
+<script src="https://esm.sh/@supabase/supabase-js@2"></script>
+<script>
+  const supabase = supabase.createClient(
+    "https://ekdezhpqwgkrdrmyaqtv.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrZGV6aHBxd2drcmRybXlhcXR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NDYzMjMsImV4cCI6MjA4MDIyMjMyM30.ESPkAEoN8cwItqNbgBvDMm_J7OkDo1tSEUYZ9BD5-AY"
+  );
 
-  <script>
-    const jsonBinUrl = "https://api.jsonbin.io/v3/b/693752ae43b1c97be9e0956a/latest";
+  async function loadProgress() {
+    const { data, error } = await supabase
+      .from("xproject_progress")
+      .select("*")
+      .order("updated_at", { ascending: false })
+      .limit(1);
 
-    async function loadProgress() {
-      try {
-        const req = await fetch(jsonBinUrl);
-        const res = await req.json();
-        const data = res.record;
+    const box = document.getElementById("progress");
 
-        document.getElementById("currentProgress").innerHTML = `
-          <h2>Current Version</h2>
-          <p>${data.version} – ${data.message}</p>
-        `;
-      } catch (e) {
-        document.getElementById("currentProgress").innerHTML = `
-          <h2>Error loading progress</h2>
-          <p>Make sure the bin is public or accessible.</p>
-        `;
-      }
+    if (error || !data.length) {
+      box.innerHTML = "Error loading progress.";
+      return;
     }
 
-    loadProgress();
-    setInterval(loadProgress, 10000);
-  </script>
+    const p = data[0];
+
+    box.innerHTML = `
+      <h2>${p.version}</h2>
+      <p>${p.message}</p>
+      <small>Updated: ${new Date(p.updated_at).toLocaleString()}</small>
+    `;
+  }
+
+  loadProgress();
+  setInterval(loadProgress, 10000);
+</script>
 
 </body>
 </html>
