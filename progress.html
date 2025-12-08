@@ -24,14 +24,14 @@
 </main>
 
 <script type="module">
-  const {createClient} = require("@supabase/superbase-js")
 
-  const supabase = createClient(
-    "https://ekdezhpqwgkrdrmyaqtv.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrZGV6aHBxd2drcmRybXlhcXR2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NDY0NjMyMywiZXhwIjoyMDgwMjIyMzIzfQ.IcrVl4q9gmJLrchZOQR7Q8mBzQek5aCgmqdPG6MqbtU"
-  );
+import { createClient } from '@supabase/supabase-js'
 
+const supabaseUrl = 'https://qopgwxlrdqjyamerllwz.supabase.co'
+  const suapaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvcGd3eGxyZHFqeWFtZXJsbHd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyMjU1MDUsImV4cCI6MjA4MDgwMTUwNX0.Zrc1hRt4SZgQIdNupFUJh6Pxf6wuf8i08tw37Utd0OU'
+ const supabase = createClient(supabaseUrl, supabaseKey)
   async function loadProgress() {
+ 
     const { data, error } = await supabase
       .from("xproject_progress")
       .select("*")
