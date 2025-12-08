@@ -40,15 +40,6 @@
       margin-bottom: 1.5rem;
     }
 
-    .status {
-      font-size: 1.2rem;
-      padding: 0.5rem 0;
-    }
-
-    ul {
-      margin-left: 1rem;
-    }
-
     footer {
       text-align: center;
       background: #202020;
@@ -56,21 +47,6 @@
       margin-top: 2rem;
       color: #aaa;
       font-size: 0.9rem;
-    }
-
-    .btn {
-      background: #333;
-      color: #eee;
-      padding: 0.6rem 1.2rem;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      transition: 0.2s;
-      margin-top: 1rem;
-    }
-
-    .btn:hover {
-      background: #555;
     }
   </style>
 </head>
@@ -85,49 +61,36 @@
     <div class="card" id="currentProgress">
       <h2>Loading progress...</h2>
     </div>
-
-    <div class="card">
-      <h2>Version Roadmap</h2>
-      <ul>
-        <li>v0.1 – Initial system install</li>
-        <li>v0.2 – Discord event simulation</li>
-        <li>v0.3 – Command handler & permission sandboxing</li>
-        <li>v0.4 – Plugin ecosystem</li>
-        <li>v1.0 – Stable release</li>
-      </ul>
-    </div>
-
-    <button class="btn" onclick="reloadProgress()">Reload Progress</button>
-
-    <script>
-      async function loadProgress() {
-        try {
-          const res = await fetch("https://github.com/Xero-Development/The-X-Project/blob/11b289848f5bebf5e1f94bd164f9bb8ff5bd5b3d/data/progress.json");
-          const data = await res.json();
-
-          document.getElementById("currentProgress").innerHTML = `
-            <h2>Current Version</h2>
-            <p class="status">${data.version} – ${data.message}</p>
-          `;
-        } catch (err) {
-          document.getElementById("currentProgress").innerHTML = `
-            <h2>Error Loading Progress</h2>
-            <p>Make sure your progress.json file exists and is publicly accessible.</p>
-          `;
-        }
-      }
-
-      function reloadProgress() {
-        loadProgress();
-      }
-
-      loadProgress();
-    </script>
-
   </main>
 
   <footer>
     &copy; 2025 The X Project
   </footer>
+
+  <script>
+    const jsonBinUrl = "https://api.jsonbin.io/v3/b/693752ae43b1c97be9e0956a/latest";
+
+    async function loadProgress() {
+      try {
+        const req = await fetch(jsonBinUrl);
+        const res = await req.json();
+        const data = res.record;
+
+        document.getElementById("currentProgress").innerHTML = `
+          <h2>Current Version</h2>
+          <p>${data.version} – ${data.message}</p>
+        `;
+      } catch (e) {
+        document.getElementById("currentProgress").innerHTML = `
+          <h2>Error loading progress</h2>
+          <p>Make sure the bin is public or accessible.</p>
+        `;
+      }
+    }
+
+    loadProgress();
+    setInterval(loadProgress, 10000);
+  </script>
+
 </body>
 </html>
