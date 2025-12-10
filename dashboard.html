@@ -37,86 +37,39 @@
 <section id="dashboard" style="padding:20px;">
   <h2>Dashboard</h2>
 
-
-
-<button id="downloadLatestBtn" style="padding:10px 15px; margin-top:15px;">
-  Download Latest Version
-</button>
-
-
-  <div id="dashboard-status" style="display:flex;flex-direction:column;gap:15px;">
+  <div id="dashboard-box" style="display:flex;flex-direction:column;gap:20px;">
     Loading dashboard...
   </div>
 
   <script>
-    // Fetch latest release from GitHub
+    // -----------------------------
+    // GitHub Release
+    // -----------------------------
     async function getLatestRelease() {
       try {
         const res = await fetch("https://api.github.com/repos/Xero-Development/The-X-Project/releases/latest");
         return await res.json();
-      } catch (e) {
-        console.error("GitHub fetch failed:", e);
-        return null;
-      }
-    }
-
-    // Ask the desktop app for its installed version
-    async function getLocalInstalledVersion() {
-      try {
-        const res = await fetch("http://localhost:17235/version"); 
-        // Desktop app must serve: { "version": "1.0.0" }
-        const data = await res.json();
-        return "ok";
       } catch {
-        // App not installed or offline
         return null;
       }
     }
 
-    async function renderDashboard() {
-      const container = document.getElementById("dashboard-status");
-      container.innerHTML = "Loading...";
-
-      const latest = await getLatestRelease();
-      const latestTag = latest?.tag_name || "unknown";
-
-      const installedVersion = await getLocalInstalledVersion();
-
-      const isInstalled = installedVersion !== null;
-      const isOutdated = isInstalled && installedVersion !== latestTag;
-
-      container.innerHTML = `
-        <div style="background:#1a1a1a;padding:15px;border-radius:8px;">
-          <h3>Latest GitHub Release</h3>
-          <p>Version: <strong>${latestTag}</strong></p>
-        </div>
-
-        <div style="background:#1a1a1a;padding:15px;border-radius:8px;margin-top:15px;">
-          <h3>Your Installed Version</h3>
-          <p>${isInstalled ? installedVersion : "Not Installed"}</p>
-
-          <p>Status: 
-            <span style="color:${isInstalled ? (isOutdated ? "#ff4d4d" : "#4dff88") : "#4dff88"};">
-              ${isInstalled ? (isOutdated ? "Outdated" : "Up to date") : "Up to date"}
-            </span>
-          </p>
-        </div>
-      `;
+    // -----------------------------
+    // Local Electron Version
+    // -----------------------------
+    async function getLocalVersion() {
+      try {
+        const res = await fetch("http://localhost:17235/version");
+        const data = await res.json();
+        return data.version;
+      } catch {
+        return null; // app not installed
+      }
     }
 
-    renderDashboard();
-  </script>
-</section>
-
-<section id="system-info" style="padding:20px;">
-  <h2>System Stats & Info</h2>
-
-  <div id="sys-info-box" style="display:flex;flex-direction:column;gap:15px;">
-    Loading system info...
-  </div>
-
-  <script>
-    // Try to get real system stats from desktop app
+    // -----------------------------
+    // Local Electron System Stats
+    // -----------------------------
     async function getLocalSystemStats() {
       try {
         const res = await fetch("http://localhost:17235/system");
@@ -126,64 +79,76 @@
       }
     }
 
-    // Browser-readable system info
+    // -----------------------------
+    // Browser-Level System Info
+    // -----------------------------
     function getBrowserSystemInfo() {
       return {
         platform: navigator.platform || "Unknown",
-        userAgent: navigator.userAgent,
         cores: navigator.hardwareConcurrency || "Unknown",
         memoryGB: navigator.deviceMemory || "Unknown",
-        screenWidth: window.screen.width,
-        screenHeight: window.screen.height,
+        screen: window.screen.width + "x" + window.screen.height,
         colorDepth: window.screen.colorDepth,
-        connection: navigator.connection ? {
-          type: navigator.connection.effectiveType,
-          downlink: navigator.connection.downlink
-        } : null
+        agent: navigator.userAgent
       };
     }
 
-    async function renderSystemInfo() {
-      const container = document.getElementById("sys-info-box");
+    // -----------------------------
+    // Render Dashboard
+    // -----------------------------
+    async function renderDashboard() {
+      const container = document.getElementById("dashboard-box");
       container.innerHTML = "Loading...";
 
-      const browserInfo = getBrowserSystemInfo();
-      const localStats = await getLocalSystemStats();
+      const latest = await getLatestRelease();
+      const latestTag = latest?.tag_name || "Unknown";
 
-      let html = `
+      const installed = await getLocalVersion();
+      const stats = await getLocalSystemStats();
+      const browserInfo = getBrowserSystemInfo();
+
+      const isInstalled = installed !== null;
+      const isOutdated = isInstalled && installed !== latestTag;
+
+      let html = "";
+
+      // Version block
+      html += `
         <div style="background:#1a1a1a;padding:15px;border-radius:8px;">
-          <h3>Browser-Level System Info</h3>
-          <p><strong>Platform:</strong> ${browserInfo.platform}</p>
-          <p><strong>CPU Threads:</strong> ${browserInfo.cores}</p>
-          <p><strong>Approx Device Memory:</strong> ${browserInfo.memoryGB} GB</p>
-          <p><strong>Screen:</strong> ${browserInfo.screenWidth}x${browserInfo.screenHeight}</p>
-          <p><strong>Color Depth:</strong> ${browserInfo.colorDepth}-bit</p>
-          <p><strong>User Agent:</strong> ${browserInfo.userAgent}</p>
-          ${
-            browserInfo.connection
-              ? `<p><strong>Network:</strong> ${browserInfo.connection.type}, ${browserInfo.connection.downlink} Mbps</p>`
-              : `<p><strong>Network:</strong> Unknown</p>`
-          }
+          <h3>Version Status</h3>
+          <p><strong>Latest Release:</strong> ${latestTag}</p>
+          <p><strong>Your Installed Version:</strong> ${isInstalled ? installed : "Not Installed"}</p>
+          <p><strong>Status:</strong> 
+            <span style="color:${isInstalled ? (isOutdated ? "#ff4d4d" : "#4dff88") : "#4dff88"};">
+              ${isInstalled ? (isOutdated ? "Outdated" : "Up to date") : "Up to date"}
+            </span>
+          </p>
         </div>
       `;
 
-      if (localStats) {
+      // System Info block
+      if (stats) {
         html += `
           <div style="background:#1a1a1a;padding:15px;border-radius:8px;">
-            <h3>Desktop System Stats (from X Launcher)</h3>
-            <p><strong>CPU Usage:</strong> ${localStats.cpu}%</p>
-            <p><strong>RAM Usage:</strong> ${localStats.ramUsed} / ${localStats.ramTotal} GB</p>
-            <p><strong>GPU:</strong> ${localStats.gpu}</p>
-            <p><strong>Disk Free:</strong> ${localStats.diskFree} GB</p>
-            <p><strong>Temperature:</strong> ${localStats.temp}°C</p>
+            <h3>System Stats (Desktop App)</h3>
+            <p><strong>CPU Usage:</strong> ${stats.cpu}%</p>
+            <p><strong>RAM:</strong> ${stats.ramUsed} / ${stats.ramTotal} GB</p>
+            <p><strong>GPU:</strong> ${stats.gpu}</p>
+            <p><strong>Disk Free:</strong> ${stats.diskFree} GB</p>
+            <p><strong>Temperature:</strong> ${stats.temp}°C</p>
           </div>
         `;
       } else {
         html += `
           <div style="background:#1a1a1a;padding:15px;border-radius:8px;">
-            <h3>Enhanced System Stats</h3>
-            <p>Desktop app not detected.</p>
-            <p>Only browser-level info is available.</p>
+            <h3>System Info (Browser Only)</h3>
+            <p><strong>Platform:</strong> ${browserInfo.platform}</p>
+            <p><strong>CPU Threads:</strong> ${browserInfo.cores}</p>
+            <p><strong>Approx RAM:</strong> ${browserInfo.memoryGB} GB</p>
+            <p><strong>Screen:</strong> ${browserInfo.screen}</p>
+            <p><strong>Color Depth:</strong> ${browserInfo.colorDepth}-bit</p>
+            <p><strong>User Agent:</strong> ${browserInfo.agent}</p>
+            <p style="color:#888;">Install & run the X Launcher for full hardware stats.</p>
           </div>
         `;
       }
@@ -191,45 +156,9 @@
       container.innerHTML = html;
     }
 
-    renderSystemInfo();
+    renderDashboard();
   </script>
 </section>
-
-<script>
-  const GITHUB_RELEASES_API =
-    "https://api.github.com/repos/Xero-Development/The-X-Project/releases/latest";
-
-  async function setupDownloadButton() {
-    const btn = document.getElementById("downloadLatestBtn");
-    btn.innerText = "Loading...";
-
-    try {
-      const res = await fetch(GITHUB_RELEASES_API);
-      const release = await res.json();
-
-      if (!release.assets || release.assets.length === 0) {
-        btn.innerText = "No Downloads";
-        btn.disabled = true;
-        return;
-      }
-
-      // Pick the first asset or choose by name
-      const asset = release.assets[0];
-
-      btn.innerText = `Download ${release.tag_name}`;
-      btn.onclick = () => {
-        window.location.href = asset.browser_download_url;
-      };
-
-    } catch (err) {
-      console.error("Failed to load release:", err);
-      btn.innerText = "Error Loading";
-      btn.disabled = true;
-    }
-  }
-
-  setupDownloadButton();
-</script>
 
 
     <div class="card">
