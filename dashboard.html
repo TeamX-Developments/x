@@ -158,6 +158,69 @@
 
     renderDashboard();
   </script>
+
+
+  <section id="logs" style="padding:20px;">
+  <h2>Logs</h2>
+
+  <div id="log-box" style="
+      background:#1a1a1a;
+      padding:15px;
+      border-radius:8px;
+      max-height:300px;
+      overflow-y:auto;
+      font-family:monospace;">
+    Loading logs...
+  </div>
+
+  <script>
+    async function getLogs() {
+      try {
+        const res = await fetch("http://localhost:17235/logs");
+        return await res.json();
+      } catch {
+        return null;
+      }
+    }
+
+    function formatLogEntry(entry) {
+      let color = "#aaa";
+      if (entry.type === "error") color = "#ff4d4d";
+      if (entry.type === "warning") color = "#ffcc44";
+      if (entry.type === "event") color = "#4dff88";
+
+      return `
+        <div style="margin-bottom:8px;">
+          <span style="color:${color};">[${entry.type.toUpperCase()}]</span>
+          <span>${entry.time}</span><br>
+          <span>${entry.message}</span>
+        </div>
+      `;
+    }
+
+    async function renderLogs() {
+      const box = document.getElementById("log-box");
+      const logs = await getLogs();
+
+      if (!logs) {
+        box.innerHTML = "No log data (desktop app not running).";
+        return;
+      }
+
+      if (logs.length === 0) {
+        box.innerHTML = "<i>No logs recorded.</i>";
+        return;
+      }
+
+      box.innerHTML = logs.map(formatLogEntry).join("");
+    }
+
+    // refresh logs every 5 seconds
+    setInterval(renderLogs, 5000);
+    renderLogs();
+  </script>
+</section>
+
 </section>
 
 
