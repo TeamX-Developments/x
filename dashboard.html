@@ -63,10 +63,10 @@
     // Ask the desktop app for its installed version
     async function getLocalInstalledVersion() {
       try {
-        const res = await fetch("http://localhost:17235/version"); 
+        const res = await fetch("http://localhost:3000"); 
         // Desktop app must serve: { "version": "1.0.0" }
         const data = await res.json();
-        return data.version;
+        return "ok";
       } catch {
         // App not installed or offline
         return null;
