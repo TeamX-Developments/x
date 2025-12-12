@@ -8,14 +8,14 @@ export default {
 
       // You must set this redirect URI in Discord Developer Portal:
       // e.g. https://YOUR-WORKER.yourname.workers.dev/callback
-      const redirectUri = env.DISCORD_REDIRECT_URI;
+      const redirectUri = "https://discord.com/oauth2/authorize?client_id=1448874475348033577&response_type=code&redirect_uri=https%3A%2F%2Fteamx-developments.github.io%2Fcallback&scope=identify";
 
       const scope = "identify"; // keep it minimal
       const state = btoa(JSON.stringify({ returnTo, t: Date.now() }))
         .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 
       const auth = new URL("https://discord.com/oauth2/authorize");
-      auth.searchParams.set("client_id", env.DISCORD_CLIENT_ID);
+      auth.searchParams.set("client_id", "1448873457344315584");
       auth.searchParams.set("redirect_uri", redirectUri);
       auth.searchParams.set("response_type", "code");
       auth.searchParams.set("scope", scope);
@@ -37,8 +37,8 @@ export default {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
-          client_id: env.DISCORD_CLIENT_ID,
-          client_secret: env.DISCORD_CLIENT_SECRET,
+          client_id: "1448873457344315584",
+          client_secret:"qNWmIvGGkSrz2aTMMYhWwJHpxjLUj8bV",
           grant_type: "authorization_code",
           code,
           redirect_uri: env.DISCORD_REDIRECT_URI,
