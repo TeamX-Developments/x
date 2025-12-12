@@ -89,7 +89,7 @@
       const { data, error } = await window.sb.auth.signInWithOAuth({
         provider: "discord",
         options: {
-          redirectTo: callbackUrl,
+          redirectTo: new URL("./oauth/callback.html", location.href).toString(),
           scopes: "identify email",
           queryParams: {
             prompt: "consent"
