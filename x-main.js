@@ -28,8 +28,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 const WORKER_BASE = "https://teamx-developments.github.io/x/";
 
-  // Where the worker should send the user back to on your site:
-  const RETURN_TO = `${location.origin}/auth.html`;
-
   document.getElementById("discordLogin").href =
-    `${WORKER_BASE}/login?return=${encodeURIComponent(RETURN_TO)}`;
+    `${WORKER_BASE}/login`;
