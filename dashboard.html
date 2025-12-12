@@ -14,52 +14,135 @@
 </head>
 
 <body class="x-app">
-<nav class="x-navbar">
-  <div class="x-navbar-inner">
-    <div class="x-navbar-left">
-      <span class="x-navbar-brand">Project X</span>
+
+  <nav class="x-navbar">
+    <div class="x-navbar-inner">
+      <div class="x-navbar-left">
+        <span class="x-navbar-brand">Project X</span>
+      </div>
+      <div class="x-navbar-center">
+        <a class="x-nav-link" href="./index.html">Home</a>
+        <a class="x-nav-link" href="./about.html">About</a>
+        <a class="x-nav-link" href="./docs.html">Docs</a>
+        <a class="x-nav-link" href="./support.html">Support</a>
+        <a class="x-nav-link x-accent" href="./apply.html">Apply</a>
+      </div>
+      <div class="x-navbar-right">
+        <button class="x-button x-button-ghost" id="logoutBtn" type="button">Logout</button>
+      </div>
     </div>
-    <div class="x-navbar-center">
-      <a class="x-nav-link" href="./index.html">Home</a>
-      <a class="x-nav-link" href="./about.html">About</a>
-      <a class="x-nav-link" href="./docs.html">Docs</a>
-      <a class="x-nav-link" href="./support.html">Support</a>
-      <a class="x-nav-link x-accent" href="./apply.html">Apply</a>
-    </div>
+  </nav>
+
+  <div class="x-os">
+    <!-- OS SIDE -->
+    <aside class="x-os-side" id="osSide">
+      <div class="x-os-side-top">
+        <div class="x-os-badge">
+          <div class="x-os-dot"></div>
+          <div>
+            <div class="x-os-title">PX-OS</div>
+            <div class="x-muted x-small">Realtime: <span id="rtStatus">starting…</span></div>
+          </div>
+        </div>
+
+        <div class="x-os-mini">
+          <div class="x-muted x-small">Local time</div>
+          <div class="x-os-clock" id="liveClock">--:--:--</div>
+        </div>
+      </div>
+
+      <nav class="x-os-nav">
+        <button class="x-os-item active" data-view="view-overview">Overview</button>
+        <button class="x-os-item" data-view="view-live">OS Live</button>
+        <button class="x-os-item" data-view="view-apps">Applications</button>
+        <button class="x-os-item" data-view="view-profile">Profile</button>
+      </nav>
+
+      <div class="x-os-side-bottom">
+        <div class="x-os-stat">
+          <div class="x-muted x-small">Online</div>
+          <div class="x-os-stat-num"><span id="onlineCount">0</span></div>
+        </div>
+
+        <button class="x-button x-button-ghost x-os-collapse" id="collapseSide" type="button">
+          Collapse
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN WORKSPACE -->
+    <main class="x-os-main">
+      <!-- OVERVIEW -->
+      <section class="x-os-view active" id="view-overview">
+        <div class="x-card">
+          <h1>Dashboard</h1>
+          <p class="x-muted">Now it looks like an OS. You’re welcome.</p>
+        </div>
+
+        <div class="x-card">
+          <h2>Status</h2>
+          <p class="x-muted">PX-OS environment ready (placeholder).</p>
+        </div>
+      </section>
+
+      <!-- LIVE -->
+      <section class="x-os-view" id="view-live">
+        <div class="x-card">
+          <h2>Online Users</h2>
+          <ul id="onlineList" class="x-list" style="margin-top:10px;"></ul>
+        </div>
+
+        <div class="x-card">
+          <h2>Realtime Feed</h2>
+          <p class="x-muted">Live updates from the database.</p>
+          <ul id="appFeed" class="x-list" style="margin-top:10px;"></ul>
+        </div>
+      </section>
+
+      <!-- APPLICATIONS -->
+      <section class="x-os-view" id="view-apps">
+        <div class="x-card">
+          <h2>Your Applications</h2>
+          <p class="x-muted">This updates live when your application changes.</p>
+          <ul id="appFeed2" class="x-list" style="margin-top:10px;"></ul>
+        </div>
+      </section>
+
+      <!-- PROFILE -->
+      <section class="x-os-view" id="view-profile">
+        <section class="x-card" id="userCard">
+          <h2>Account</h2>
+
+          <p class="x-muted" id="profileLine">Loading user…</p>
+
+          <div class="x-row" style="margin-top:12px;">
+            <button class="x-button x-button-ghost" id="editProfileBtn" type="button">
+              Edit Profile
+            </button>
+          </div>
+
+          <div id="editProfileSection" style="display:none; margin-top:14px;">
+            <form id="editProfileForm" class="x-form">
+              <label class="x-label">Username
+                <input class="x-input" id="editUsername" type="text" placeholder="New username" required />
+              </label>
+
+              <div class="x-row">
+                <button class="x-button" type="submit">Save</button>
+                <button class="x-button x-button-ghost" id="cancelEditBtn" type="button">Cancel</button>
+              </div>
+
+              <p class="x-muted" id="editStatus" style="margin-top:10px;"></p>
+            </form>
+          </div>
+        </section>
+      </section>
+    </main>
   </div>
-</nav>
 
-<main class="x-container">
-  <section class="x-card">
-    <h1>Dashboard</h1>
-    <p class="x-muted">If you can see this while logged out, your guard isn’t working. Congrats.</p>
-    <div class="x-row" style="margin-top:12px;">
-      <button class="x-button" id="logoutBtn" type="button">Logout</button>
-      <a class="x-button x-button-ghost" href="./apply.html">Apply</a>
-    </div>
-  </section>
-
-  <section class="x-card" id="userCard">
-    <h2>Account</h2>
-    <p class="x-muted">Loading user…</p>
-  </section>
-
-<section class="x-card">
-  <h2>OS Live</h2>
-  <p class="x-muted">Realtime connection: <span id="rtStatus">starting…</span></p>
-  <p class="x-muted">Local time: <span id="liveClock">--:--:--</span></p>
-</section>
-
-<section class="x-card">
-  <h2>Online Users</h2>
-  <p class="x-muted"><span id="onlineCount">0</span> online right now</p>
-  <ul id="onlineList" class="x-list" style="margin-top:10px;"></ul>
-</section>
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./supabase-client.js"></script>
-<script src="./dashboard.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./supabase-client.js"></script>
+  <script src="./dashboard.js" defer></script>
 </body>
+
 </html>
