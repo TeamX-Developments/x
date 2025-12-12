@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PX-OS | Auth</title>
+
+  <style>
+    :root {
+      --x-bg: #0e0f13;
+      --x-card: #151821;
+      --x-border: #222633;
+      --x-text: #ffffff;
+      --x-text-muted: #9aa0a6;
+      --x-accent: #6cf;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--x-bg);
+      color: var(--x-text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .x-auth {
+      width: 100%;
+      max-width: 420px;
+      background: var(--x-card);
+      border: 1px solid var(--x-border);
+      border-radius: 14px;
+      padding: 24px;
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .x-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .x-tab {
+      flex: 1;
+      padding: 8px;
+      background: transparent;
+      border: 1px solid var(--x-border);
+      border-radius: 8px;
+      color: var(--x-text-muted);
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .x-tab.active {
+      color: var(--x-accent);
+      border-color: var(--x-accent);
+    }
+
+    .x-form {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .x-form.active {
+      display: flex;
+    }
+
+    input {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--x-border);
+      background: #0b0d12;
+      color: var(--x-text);
+      font-size: 0.9rem;
+    }
+
+    button.submit {
+      margin-top: 6px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: var(--x-accent);
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .x-note {
+      margin-top: 14px;
+      font-size: 0.8rem;
+      color: var(--x-text-muted);
+      text-align: center;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="x-auth">
+    <h1>Project X</h1>
+
+    <div class="x-tabs">
+      <button class="x-tab active" data-tab="login">Login</button>
+      <button class="x-tab" data-tab="register">Register</button>
+    </div>
+
+    <!-- Login -->
+    <form class="x-form active" id="login">
+      <input type="email" placeholder="Email address" required />
+      <button class="submit" type="submit">Request Login</button>
+    </form>
+
+    <!-- Register -->
+    <form class="x-form" id="register">
+      <input type="text" placeholder="Username" required />
+      <input type="email" placeholder="Email address" required />
+      <button class="submit" type="submit">Request Account</button>
+    </form>
+
+    <div class="x-note">
+      This system sends an email request.<br />
+      No passwords are collected.
+    </div>
+  </div>
+
+  <script>
+    const ADMIN_EMAIL = "teamxdevelopments@gmail.com";
+
+    const tabs = document.querySelectorAll(".x-tab");
+    const forms = document.querySelectorAll(".x-form");
+
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        tabs.forEach(t => t.classList.remove("active"));
+        forms.forEach(f => f.classList.remove("active"));
+
+        tab.classList.add("active");
+        document.getElementById(tab.dataset.tab).classList.add("active");
+      });
+    });
+
+    function sendEmail(subject, body) {
+      const mailto =
+        `mailto:${ADMIN_EMAIL}` +
+        `?subject=${encodeURIComponent(subject)}` +
+        `&body=${encodeURIComponent(body)}`;
+
+      window.location.href = mailto;
+    }
+
+    document.getElementById("login").addEventListener("submit", e => {
+      e.preventDefault();
+
+      const email = e.target.querySelector("input").value;
+
+      sendEmail(
+        "PX-OS Login Request",
+        `Email: ${email}\n\nUser is requesting login access.`
+      );
+    });
+
+    document.getElementById("register").addEventListener("submit", e => {
+      e.preventDefault();
+
+      const inputs = e.target.querySelectorAll("input");
+
+      sendEmail(
+        "PX-OS Registration Request",
+        `Username: ${inputs[0].value}\nEmail: ${inputs[1].value}\n\nUser is requesting an account.`
+      );
+    });
+  </script>
+
+</body>
+</html>
