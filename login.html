@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" class="x-app">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PX-OS | Login</title>
+
+  <!-- X CSS system -->
+  <link rel="stylesheet" href="./x-layout.css" />
+  <link rel="stylesheet" href="./x-components.css" />
+  <link rel="stylesheet" href="./x-forms.css" />
+  <link rel="stylesheet" href="./x-icons.css" />
+  <link rel="stylesheet" href="./x-animations.css" />
+  <link rel="stylesheet" href="./x-styles.css" />
+
+  <style>
+    /* Small glue so it looks good even if your CSS is picky */
+    .x-auth-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .x-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .x-muted {
+      opacity: 0.85;
+    }
+
+    /* Fallback button styles if x-components doesn’t define them */
+    .x-button {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 700;
+      background: var(--x-accent, #6cf);
+      color: #000;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .x-button-ghost {
+      background: rgba(255,255,255,0.06);
+      color: inherit;
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+  </style>
+</head>
+
+<body class="x-app">
+
+  <!-- Navbar -->
+  <nav class="x-navbar">
+    <div class="x-navbar-left">
+      <span class="x-navbar-brand">Project X</span>
+    </div>
+
+    <div class="x-navbar-center">
+      <a class="x-nav-link" href="./index.html">Home</a>
+      <a class="x-nav-link" href="./about.html">About</a>
+      <a class="x-nav-link" href="./docs.html">Docs</a>
+      <a class="x-nav-link" href="./support.html">Support</a>
+      <a class="x-nav-link x-accent" href="./apply.html">Apply</a>
+      <a class="x-nav-link active" href="./login.html">Login</a>
+    </div>
+  </nav>
+
+  <main class="x-container">
+    <div class="x-auth-wrap">
+      <section class="x-card">
+        <h1>Login</h1>
+        <p class="x-muted">
+          Sign in with Discord to access the dashboard. This uses OAuth2 (the normal, non-sketchy way).
+        </p>
+
+        <div class="x-row" style="margin-top:14px;">
+          <a id="discordLogin" class="x-button" href="#">Login with Discord</a>
+          <a class="x-button x-button-ghost" href="./dashboard.html">Go to Dashboard</a>
+        </div>
+
+        <p class="x-muted" style="margin-top:12px;">
+          If nothing happens, your Worker URL is wrong or your Discord redirect URL isn’t configured.
+        </p>
+      </section>
+
+      <section class="x-card">
+        <h2>New here?</h2>
+        <p class="x-muted">
+          Want to join the team? Submit an application.
+        </p>
+        <div class="x-row" style="margin-top:12px;">
+          <a class="x-button x-button-ghost" href="./apply.html">Apply</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="./x-main.js">
+
+  </script>
+
+</body>
+</html>
