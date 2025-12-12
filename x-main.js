@@ -1,21 +1,28 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const list = document.getElementById("releases");
-  if (!list) return;
+  const btn = document.getElementById("downloadBtn");
+  const text = document.getElementById("downloadText");
+
+  if (!btn || !text) return;
 
   try {
     const res = await fetch(
-      "https://api.github.com/repos/TeamX-Developments/The-X-Project/releases"
+      "https://api.github.com/repos/TeamX-Developments/The-X-Project/releases/latest"
     );
-    const releases = await res.json();
+    const release = await res.json();
 
-    list.innerHTML = releases.slice(0, 5).map(r => `
-      <li class="x-release">
-        <strong>${r.name || r.tag_name}</strong>
-        <p>${r.body ? r.body.substring(0, 140) + "…" : "No description."}</p>
-        <a href="${r.html_url}" target="_blank">View on GitHub</a>
-      </li>
-    `).join("");
+    let url = release.html_url;
+    let label = release.name || release.tag_name;
+
+    if (release.assets && release.assets.length > 0) {
+      url = release.assets[0].browser_download_url;
+    }
+
+    btn.href = url;
+    btn.textContent = `Download ${label}`;
+    btn.style.display = "inline-block";
+
+    text.textContent = "Latest stable release available.";
   } catch (err) {
-    list.innerHTML = "<li>Failed to load releases.</li>";
+    text.textContent = "Failed to load latest release.";
   }
 });
