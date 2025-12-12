@@ -1,16 +1,14 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const btn = document.getElementById("downloadBtn");
-  const text = document.getElementById("downloadText");
-
-  if (!btn || !text) return;
+  const list = document.getElementById("releases");
+  if (!list) return;
 
   try {
     const res = await fetch(
-      "https://api.github.com/repos/TeamX-Developments/The-X-Project/releases/latest"
+      "https://api.github.com/repos/TeamX-Developments/The-X-Project/releases"
     );
-    const release = await res.json();
+    const releases = await res.json();
 
-    let url = release.html_url;
+ let url = release.html_url;
     let label = release.name || release.tag_name;
 
     if (release.assets && release.assets.length > 0) {
@@ -23,6 +21,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     text.textContent = "Latest stable release available.";
   } catch (err) {
-    text.textContent = "Failed to load latest release.";
+    list.innerHTML = "<li>Failed to load releases.</li>";
   }
 });
