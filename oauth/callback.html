@@ -28,27 +28,16 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../supabase-client.js"></script>
   <script>
-    (async () => {
-      const statusEl = document.getElementById("status");
-      const qs = new URLSearchParams(location.search);
-      const code = qs.get("code");
+    const qs = new URLSearchParams(location.search);
+    const code = qs.get("code");
 
-      try {
-        // If you’re using the code flow (common), exchange the code for a session.
-        if (code) {
-          const { error } = await window.sb.auth.exchangeCodeForSession(code);
-          if (error) throw error;
-        }
+    if (code) {
+      const { error } = await sb.auth.exchangeCodeForSession(code);
+      if (error) throw error;
+    }
 
-        statusEl.textContent = "Done. Redirecting…";
+    location.replace("../dashboard.html");
 
-        // Go to dashboard (works on GitHub Pages subpaths)
-        const dashboardUrl = new URL("../dashboard.html", location.href).toString();
-        location.replace(dashboardUrl);
-      } catch (e) {
-        statusEl.textContent = "OAuth callback failed: " + (e?.message || String(e));
-      }
-    })();
   </script>
 </body>
 </html>
