@@ -78,41 +78,37 @@
           <h1>Dashboard</h1>
           <p class="x-muted">Now it looks like an OS. You’re welcome.</p>
         </div>
-        <section class="x-card">
-          <h2>OS Status</h2>
+<section class="x-card">
+  <h2>OS Status</h2>
 
-          <div class="x-status-grid">
-            <div class="x-status-item">
-              <div class="x-muted x-small">Session</div>
-              <div id="osSession" class="x-status-val">--</div>
-            </div>
+  <div class="x-status-grid" style="margin-top:12px;">
+    <!-- OS -->
+    <div class="x-status-item"><div class="x-muted x-small">Platform</div><div id="osPlatform" class="x-status-val">--</div></div>
+    <div class="x-status-item"><div class="x-muted x-small">Release</div><div id="osRelease" class="x-status-val">--</div></div>
+    <div class="x-status-item"><div class="x-muted x-small">Arch</div><div id="osArch" class="x-status-val">--</div></div>
+    <div class="x-status-item"><div class="x-muted x-small">Hostname</div><div id="osHostname" class="x-status-val">--</div></div>
+    <div class="x-status-item"><div class="x-muted x-small">Uptime</div><div id="osUptime" class="x-status-val">--</div></div>
+    <div class="x-status-item"><div class="x-muted x-small">Load Avg</div><div id="osLoadavg" class="x-status-val">--</div></div>
+    <div class="x-status-item"><div class="x-muted x-small">Cores</div><div id="osCores" class="x-status-val">--</div></div>
+    <div class="x-status-item"><div class="x-muted x-small">CPU Model</div><div id="osCpuModel" class="x-status-val">--</div></div>
 
-            <div class="x-status-item">
-              <div class="x-muted x-small">Realtime</div>
-              <div id="osRealtime" class="x-status-val">--</div>
-            </div>
+    <!-- Memory -->
+    <div class="x-status-item"><div class="x-muted x-small">Memory Total</div><div id="memTotal" class="x-status-val">--</div></div>
+    <div class="x-status-item"><div class="x-muted x-small">Memory Free</div><div id="memFree" class="x-status-val">--</div></div>
+    <div class="x-status-item"><div class="x-muted x-small">Electron RSS</div><div id="procRss" class="x-status-val">--</div></div>
+    <div class="x-status-item"><div class="x-muted x-small">Heap Used</div><div id="procHeapUsed" class="x-status-val">--</div></div>
+    <div class="x-status-item"><div class="x-muted x-small">Heap Total</div><div id="procHeapTotal" class="x-status-val">--</div></div>
 
-            <div class="x-status-item">
-              <div class="x-muted x-small">Online</div>
-              <div id="osOnline" class="x-status-val">--</div>
-            </div>
+    <!-- CPU -->
+    <div class="x-status-item"><div class="x-muted x-small">Process CPU</div><div id="procCpu" class="x-status-val">--</div></div>
+    <div class="x-status-item"><div class="x-muted x-small">Stats API</div><div id="statsApi" class="x-status-val">--</div></div>
+  </div>
 
-            <div class="x-status-item">
-              <div class="x-muted x-small">DB Sync</div>
-              <div id="osDbSync" class="x-status-val">--</div>
-            </div>
-
-            <div class="x-status-item">
-              <div class="x-muted x-small">Latency</div>
-              <div id="osLatency" class="x-status-val">--</div>
-            </div>
-
-            <div class="x-status-item">
-              <div class="x-muted x-small">PX-OS Version</div>
-              <div id="osVersion" class="x-status-val">--</div>
-            </div>
-          </div>
-        </section>
+  <details style="margin-top:12px;">
+    <summary class="x-muted">Raw JSON</summary>
+    <pre id="statsRaw" class="x-muted" style="white-space:pre-wrap;margin:10px 0 0;">--</pre>
+  </details>
+</section>
 
       </section>
 
