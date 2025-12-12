@@ -2,232 +2,154 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>X Project Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PX-OS | Dashboard</title>
+
   <style>
+    :root {
+      --x-bg: #0e0f13;
+      --x-card: #151821;
+      --x-border: #222633;
+      --x-text: #ffffff;
+      --x-text-muted: #9aa0a6;
+      --x-accent: #6cf;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      background: #111;
-      color: #eee;
-      font-family: sans-serif;
       margin: 0;
-      padding: 0;
+      background: var(--x-bg);
+      color: var(--x-text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     }
-    header {
-      background: #222;
-      padding: 1.5rem;
-      text-align: center;
+
+    /* Navbar */
+    .x-navbar {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--x-border);
     }
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 2rem;
+
+    .x-navbar a {
+      color: var(--x-text-muted);
+      text-decoration: none;
+      margin-left: 16px;
     }
-    .card {
-      background: #1a1a1a;
-      padding: 1.5rem;
+
+    .x-navbar a.active {
+      color: var(--x-accent);
+    }
+
+    /* Layout */
+    .x-dashboard {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: calc(100vh - 56px);
+    }
+
+    /* Sidebar */
+    .x-sidebar {
+      border-right: 1px solid var(--x-border);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .x-sidebar a {
+      padding: 8px 10px;
       border-radius: 8px;
-      margin-bottom: 1.5rem;
+      text-decoration: none;
+      color: var(--x-text-muted);
+    }
+
+    .x-sidebar a:hover,
+    .x-sidebar a.active {
+      background: #1b1f2a;
+      color: var(--x-text);
+    }
+
+    /* Main */
+    .x-main {
+      padding: 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .x-card {
+      background: var(--x-card);
+      border: 1px solid var(--x-border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    h1, h2 {
+      margin: 0 0 8px;
+      font-weight: 600;
+    }
+
+    p {
+      margin: 0;
+      color: var(--x-text-muted);
+      font-size: 0.9rem;
     }
   </style>
 </head>
+
 <body>
-  <header>
-    <h1>X Project Dashboard</h1>
-  </header>
-<section id="dashboard" style="padding:20px;">
-  <h2>Dashboard</h2>
 
-  <div id="dashboard-box" style="display:flex;flex-direction:column;gap:20px;">
-    Loading dashboard...
-  </div>
-
-  <script>
-    // -----------------------------
-    // GitHub Release
-    // -----------------------------
-    async function getLatestRelease() {
-      try {
-        const res = await fetch("https://api.github.com/repos/Xero-Development/The-X-Project/releases/latest");
-        return await res.json();
-      } catch {
-        return null;
-      }
-    }
-
-    // -----------------------------
-    // Local Electron Version
-    // -----------------------------
-    async function getLocalVersion() {
-      try {
-        const res = await fetch("http://localhost:17235/version");
-        const data = await res.json();
-        return data.version;
-      } catch {
-        return null; // app not installed
-      }
-    }
-
-    // -----------------------------
-    // Local Electron System Stats
-    // -----------------------------
-    async function getLocalSystemStats() {
-      try {
-        const res = await fetch("http://localhost:17235/system");
-        return await res.json();
-      } catch {
-        return null;
-      }
-    }
-
-    // -----------------------------
-    // Browser-Level System Info
-    // -----------------------------
-    function getBrowserSystemInfo() {
-      return {
-        platform: navigator.platform || "Unknown",
-        cores: navigator.hardwareConcurrency || "Unknown",
-        memoryGB: navigator.deviceMemory || "Unknown",
-        screen: window.screen.width + "x" + window.screen.height,
-        colorDepth: window.screen.colorDepth,
-        agent: navigator.userAgent
-      };
-    }
-
-    // -----------------------------
-    // Render Dashboard
-    // -----------------------------
-    async function renderDashboard() {
-      const container = document.getElementById("dashboard-box");
-      container.innerHTML = "Loading...";
-
-      const latest = await getLatestRelease();
-      const latestTag = latest?.tag_name || "Unknown";
-
-      const installed = await getLocalVersion();
-      const stats = await getLocalSystemStats();
-      const browserInfo = getBrowserSystemInfo();
-
-      const isInstalled = installed !== null;
-      const isOutdated = isInstalled && installed !== latestTag;
-
-      let html = "";
-
-      // Version block
-      html += `
-        <div style="background:#1a1a1a;padding:15px;border-radius:8px;">
-          <h3>Version Status</h3>
-          <p><strong>Latest Release:</strong> ${latestTag}</p>
-          <p><strong>Your Installed Version:</strong> ${isInstalled ? installed : "Not Installed"}</p>
-          <p><strong>Status:</strong> 
-            <span style="color:${isInstalled ? (isOutdated ? "#ff4d4d" : "#4dff88") : "#4dff88"};">
-              ${isInstalled ? (isOutdated ? "Outdated" : "Up to date") : "Up to date"}
-            </span>
-          </p>
-        </div>
-      `;
-
-      // System Info block
-      if (stats) {
-        html += `
-          <div style="background:#1a1a1a;padding:15px;border-radius:8px;">
-            <h3>System Stats (Desktop App)</h3>
-            <p><strong>CPU Usage:</strong> ${stats.cpu}%</p>
-            <p><strong>RAM:</strong> ${stats.ramUsed} / ${stats.ramTotal} GB</p>
-            <p><strong>GPU:</strong> ${stats.gpu}</p>
-            <p><strong>Disk Free:</strong> ${stats.diskFree} GB</p>
-            <p><strong>Temperature:</strong> ${stats.temp}°C</p>
-          </div>
-        `;
-      } else {
-        html += `
-          <div style="background:#1a1a1a;padding:15px;border-radius:8px;">
-            <h3>System Info (Browser Only)</h3>
-            <p><strong>Platform:</strong> ${browserInfo.platform}</p>
-            <p><strong>CPU Threads:</strong> ${browserInfo.cores}</p>
-            <p><strong>Approx RAM:</strong> ${browserInfo.memoryGB} GB</p>
-            <p><strong>Screen:</strong> ${browserInfo.screen}</p>
-            <p><strong>Color Depth:</strong> ${browserInfo.colorDepth}-bit</p>
-            <p><strong>User Agent:</strong> ${browserInfo.agent}</p>
-            <p style="color:#888;">Install & run the X Launcher for full hardware stats.</p>
-          </div>
-        `;
-      }
-
-      container.innerHTML = html;
-    }
-
-    renderDashboard();
-  </script>
-
-
-  <section id="logs" style="padding:20px;">
-  <h2>Logs</h2>
-
-  <div id="log-box" style="
-      background:#1a1a1a;
-      padding:15px;
-      border-radius:8px;
-      max-height:300px;
-      overflow-y:auto;
-      font-family:monospace;">
-    Loading logs...
-  </div>
-
-  <script>
-    async function getLogs() {
-      try {
-        const res = await fetch("http://localhost:17235/logs");
-        return await res.json();
-      } catch {
-        return null;
-      }
-    }
-
-    function formatLogEntry(entry) {
-      let color = "#aaa";
-      if (entry.type === "error") color = "#ff4d4d";
-      if (entry.type === "warning") color = "#ffcc44";
-      if (entry.type === "event") color = "#4dff88";
-
-      return `
-        <div style="margin-bottom:8px;">
-          <span style="color:${color};">[${entry.type.toUpperCase()}]</span>
-          <span>${entry.time}</span><br>
-          <span>${entry.message}</span>
-        </div>
-      `;
-    }
-
-    async function renderLogs() {
-      const box = document.getElementById("log-box");
-      const logs = await getLogs();
-
-      if (!logs) {
-        box.innerHTML = "No log data (desktop app not running).";
-        return;
-      }
-
-      if (logs.length === 0) {
-        box.innerHTML = "<i>No logs recorded.</i>";
-        return;
-      }
-
-      box.innerHTML = logs.map(formatLogEntry).join("");
-    }
-
-    // refresh logs every 5 seconds
-    setInterval(renderLogs, 5000);
-    renderLogs();
-  </script>
-</section>
-
-</section>
-
-
-    <div class="card">
-      <h2>Navigation</h2>
-      <p><a href="index.html" style="color:#6cf;">Return to main page</a></p>
+  <!-- Top Nav -->
+  <nav class="x-navbar">
+    <strong>Project X</strong>
+    <div>
+      <a href="./dashboard.html" class="active">Dashboard</a>
+      <a href="./index.html">Home</a>
+      <a href="./auth.html">Logout</a>
     </div>
+  </nav>
+
+  <!-- Dashboard -->
+  <div class="x-dashboard">
+
+    <!-- Sidebar -->
+    <aside class="x-sidebar">
+      <a class="active" href="#">Overview</a>
+      <a href="#">Bots</a>
+      <a href="#">Files</a>
+      <a href="#">Settings</a>
+      <a href="#">Support</a>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="x-main">
+
+      <section class="x-card">
+        <h2>Status</h2>
+        <p>PX-OS environment ready.</p>
+      </section>
+
+      <section class="x-card">
+        <h2>Installed Version</h2>
+        <p>Latest release detected.</p>
+      </section>
+
+      <section class="x-card">
+        <h2>Bots</h2>
+        <p>No bots configured yet.</p>
+      </section>
+
+      <section class="x-card">
+        <h2>System</h2>
+        <p>Node inline system operational.</p>
+      </section>
+
+    </main>
   </div>
+
 </body>
 </html>
