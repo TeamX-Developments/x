@@ -126,12 +126,40 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="x-main">
-
-      <section class="x-card">
-        <h2>Status</h2>
-        <p>PX-OS environment ready.</p>
-      </section>
+<main class="x-main">
+  <section class="x-card" id="userCard">
+    <h2>Account</h2>
+    <p class="x-muted">Not signed in.</p>
+    <a class="x-button x-button-ghost" href="./auth.html">Sign in</a>
+  </section>
+  
+  <script>
+    const card = document.getElementById("userCard");
+    const raw = localStorage.getItem("px_user");
+  
+    if (raw) {
+      const u = JSON.parse(raw);
+      const avatar = u.avatar
+        ? `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.png?size=128`
+        : "";
+  
+      card.innerHTML = `
+        <h2>Account</h2>
+        ${avatar ? `<img src="${avatar}" alt="avatar" style="width:64px;height:64px;border-radius:12px;margin:10px 0;">` : ""}
+        <p>Signed in as <strong>${u.username}</strong></p>
+        <p class="x-muted">ID: ${u.id}</p>
+        <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+          <a class="x-button x-button-ghost" href="./auth.html">Switch Account</a>
+          <button class="x-button" id="logoutBtn" type="button">Logout</button>
+        </div>
+      `;
+  
+      document.getElementById("logoutBtn").onclick = () => {
+        localStorage.removeItem("px_user");
+        location.reload();
+      };
+    }
+  </script>
 
       <section class="x-card">
         <h2>Installed Version</h2>
