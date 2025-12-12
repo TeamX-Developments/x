@@ -41,7 +41,7 @@ export default {
           client_secret:"qNWmIvGGkSrz2aTMMYhWwJHpxjLUj8bV",
           grant_type: "authorization_code",
           code,
-          redirect_uri: env.DISCORD_REDIRECT_URI,
+          redirect_uri: redirectUrl,
         }),
       });
 
