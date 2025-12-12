@@ -1,183 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="x-app">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PX-OS | Dashboard</title>
 
-  <style>
-    :root {
-      --x-bg: #0e0f13;
-      --x-card: #151821;
-      --x-border: #222633;
-      --x-text: #ffffff;
-      --x-text-muted: #9aa0a6;
-      --x-accent: #6cf;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      background: var(--x-bg);
-      color: var(--x-text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-    }
-
-    /* Navbar */
-    .x-navbar {
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      border-bottom: 1px solid var(--x-border);
-    }
-
-    .x-navbar a {
-      color: var(--x-text-muted);
-      text-decoration: none;
-      margin-left: 16px;
-    }
-
-    .x-navbar a.active {
-      color: var(--x-accent);
-    }
-
-    /* Layout */
-    .x-dashboard {
-      display: grid;
-      grid-template-columns: 220px 1fr;
-      min-height: calc(100vh - 56px);
-    }
-
-    /* Sidebar */
-    .x-sidebar {
-      border-right: 1px solid var(--x-border);
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .x-sidebar a {
-      padding: 8px 10px;
-      border-radius: 8px;
-      text-decoration: none;
-      color: var(--x-text-muted);
-    }
-
-    .x-sidebar a:hover,
-    .x-sidebar a.active {
-      background: #1b1f2a;
-      color: var(--x-text);
-    }
-
-    /* Main */
-    .x-main {
-      padding: 24px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 20px;
-    }
-
-    .x-card {
-      background: var(--x-card);
-      border: 1px solid var(--x-border);
-      border-radius: 12px;
-      padding: 16px;
-    }
-
-    h1, h2 {
-      margin: 0 0 8px;
-      font-weight: 600;
-    }
-
-    p {
-      margin: 0;
-      color: var(--x-text-muted);
-      font-size: 0.9rem;
-    }
-  </style>
+  <link rel="stylesheet" href="./x-layout.css" />
+  <link rel="stylesheet" href="./x-components.css" />
+  <link rel="stylesheet" href="./x-forms.css" />
+  <link rel="stylesheet" href="./x-icons.css" />
+  <link rel="stylesheet" href="./x-animations.css" />
+  <link rel="stylesheet" href="./x-styles.css" />
 </head>
 
-<body>
-
-  <!-- Top Nav -->
-  <nav class="x-navbar">
-    <strong>Project X</strong>
-    <div>
-      <a href="./dashboard.html" class="active">Dashboard</a>
-      <a href="./index.html">Home</a>
-      <a href="./auth.html">Logout</a>
+<body class="x-app">
+<nav class="x-navbar">
+  <div class="x-navbar-inner">
+    <div class="x-navbar-left">
+      <span class="x-navbar-brand">Project X</span>
     </div>
-  </nav>
+    <div class="x-navbar-center">
+      <a class="x-nav-link" href="./index.html">Home</a>
+      <a class="x-nav-link" href="./about.html">About</a>
+      <a class="x-nav-link" href="./docs.html">Docs</a>
+      <a class="x-nav-link" href="./support.html">Support</a>
+      <a class="x-nav-link x-accent" href="./apply.html">Apply</a>
+    </div>
+  </div>
+</nav>
 
-  <!-- Dashboard -->
-  <div class="x-dashboard">
+<main class="x-container">
+  <section class="x-card">
+    <h1>Dashboard</h1>
+    <p class="x-muted">If you can see this while logged out, your guard isn’t working. Congrats.</p>
+    <div class="x-row" style="margin-top:12px;">
+      <button class="x-button" id="logoutBtn" type="button">Logout</button>
+      <a class="x-button x-button-ghost" href="./apply.html">Apply</a>
+    </div>
+  </section>
 
-    <!-- Sidebar -->
-    <aside class="x-sidebar">
-      <a class="active" href="#">Overview</a>
-      <a href="#">Bots</a>
-      <a href="#">Files</a>
-      <a href="#">Settings</a>
-      <a href="#">Support</a>
-    </aside>
-
-    <!-- Main Content -->
-<main class="x-main">
   <section class="x-card" id="userCard">
     <h2>Account</h2>
-    <p class="x-muted">Not signed in.</p>
-    <a class="x-button x-button-ghost" href="./auth.html">Sign in</a>
+    <p class="x-muted">Loading user…</p>
   </section>
-  
-  <script>
-    const card = document.getElementById("userCard");
-    const raw = localStorage.getItem("px_user");
-  
-    if (raw) {
-      const u = JSON.parse(raw);
-      const avatar = u.avatar
-        ? `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.png?size=128`
-        : "";
-  
-      card.innerHTML = `
-        <h2>Account</h2>
-        ${avatar ? `<img src="${avatar}" alt="avatar" style="width:64px;height:64px;border-radius:12px;margin:10px 0;">` : ""}
-        <p>Signed in as <strong>${u.username}</strong></p>
-        <p class="x-muted">ID: ${u.id}</p>
-        <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
-          <a class="x-button x-button-ghost" href="./auth.html">Switch Account</a>
-          <button class="x-button" id="logoutBtn" type="button">Logout</button>
-        </div>
-      `;
-  
-      document.getElementById("logoutBtn").onclick = () => {
-        localStorage.removeItem("px_user");
-        location.reload();
-      };
-    }
-  </script>
 
-      <section class="x-card">
-        <h2>Installed Version</h2>
-        <p>Latest release detected.</p>
-      </section>
+  <section class="x-card">
+    <h2>Status</h2>
+    <p class="x-muted">PX-OS environment ready (placeholder).</p>
+  </section>
+</main>
 
-      <section class="x-card">
-        <h2>Bots</h2>
-        <p>No bots configured yet.</p>
-      </section>
-
-      <section class="x-card">
-        <h2>System</h2>
-        <p>Node inline system operational.</p>
-      </section>
-
-    </main>
-  </div>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase-client.js"></script>
+<script src="./dashboard.js" defer></script>
 </body>
 </html>

@@ -1,177 +1,50 @@
-<html>
-  <head>
-    <title>PX-OS | Home</title>
-<style>
-/* ===== Root variables ===== */
-:root {
-  --x-bg: #0e0f13;
-  --x-card: #151821;
-  --x-border: #222633;
-  --x-text: #ffffff;
-  --x-text-muted: #9aa0a6;
-  --x-accent: #6cf;
-}
+<!DOCTYPE html>
+<html lang="en" class="x-app">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PX-OS | Apply</title>
 
-/* ===== Base ===== */
-html, body {
-  margin: 0;
-  padding: 0;
-  background: var(--x-bg);
-  color: var(--x-text);
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-}
+  <link rel="stylesheet" href="./x-layout.css" />
+  <link rel="stylesheet" href="./x-components.css" />
+  <link rel="stylesheet" href="./x-forms.css" />
+  <link rel="stylesheet" href="./x-icons.css" />
+  <link rel="stylesheet" href="./x-animations.css" />
+  <link rel="stylesheet" href="./x-styles.css" />
+</head>
 
-/* ===== Layout ===== */
-.x-container {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-/* ===== Navbar ===== */
-.x-navbar {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  height: 56px;
-  padding: 0 20px;
-
-  background: var(--x-bg);
-  border-bottom: 1px solid var(--x-border);
-}
-
-.x-navbar-left {
-  position: absolute;
-  left: 20px;
-}
-
-.x-navbar-center {
-  display: flex;
-  gap: 18px;
-}
-
-.x-navbar-brand {
-  font-weight: 600;
-  font-size: 1rem;
-}
-
-/* ===== Nav links ===== */
-.x-nav-link {
-  text-decoration: none;
-  font-size: 0.9rem;
-  color: var(--x-text-muted);
-
-  padding: 6px 8px;
-  border-radius: 6px;
-
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-.x-nav-link:hover {
-  color: var(--x-text);
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.x-nav-link.active,
-.x-nav-link.x-accent {
-  color: var(--x-accent);
-}
-
-/* ===== Cards ===== */
-.x-card {
-  background: var(--x-card);
-  border: 1px solid var(--x-border);
-  border-radius: 10px;
-  padding: 20px;
-}
-
-.x-highlight {
-  border-color: var(--x-accent);
-}
-
-/* ===== Lists ===== */
-.x-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.x-list li {
-  padding: 10px 0;
-  border-bottom: 1px solid var(--x-border);
-}
-
-.x-list li:last-child {
-  border-bottom: none;
-}
-
-/* ===== Typography ===== */
-h1, h2 {
-  margin: 0 0 10px 0;
-  font-weight: 600;
-}
-
-p {
-  margin: 0;
-  color: var(--x-text-muted);
-}
-
-a {
-  color: var(--x-accent);
-}
-</style>
-
-  </head>
-<body>
-    <nav class="x-navbar">
-  <div class="x-navbar-left">
-    <span class="x-navbar-brand">Project X</span>
-  </div>
-
-  <div class="x-navbar-center">
-    <a class="x-nav-link" href="./index.html">Home</a>
-    <a class="x-nav-link" href="./about.html">About</a>
-    <a class="x-nav-link" href="./docs.html">Docs</a>
-    <a class="x-nav-link" href="./support.html">Support</a>
-    <a class="x-nav-link x-accent" href="./apply.html">Apply</a>
+<body class="x-app">
+<nav class="x-navbar">
+  <div class="x-navbar-inner">
+    <div class="x-navbar-left">
+      <span class="x-navbar-brand">Project X</span>
+    </div>
+    <div class="x-navbar-center">
+      <a class="x-nav-link" href="./index.html">Home</a>
+      <a class="x-nav-link" href="./about.html">About</a>
+      <a class="x-nav-link" href="./docs.html">Docs</a>
+      <a class="x-nav-link" href="./support.html">Support</a>
+      <a class="x-nav-link x-accent" href="./apply.html">Apply</a>
+    </div>
   </div>
 </nav>
+
 <main class="x-container">
   <section class="x-card">
-    <h1>Apply to Project X</h1>
+    <h1>Apply</h1>
+    <p class="x-muted">We’re hiring staff. Submit your application below.</p>
+  </section>
 
-    <p>
-      We’re looking for motivated contributors to help build PX-OS.
-      Fill out the application below. If you’re a good fit, we’ll reach out.
-    </p>
+  <section class="x-card" id="applyGate">
+    <p class="x-muted">Checking login…</p>
+  </section>
 
-    <form class="x-form" id="applyForm">
-      <label class="x-label">
-        Name
-        <input class="x-input" type="text" name="name" required />
-      </label>
+  <section class="x-card" id="applyFormCard" style="display:none;">
+    <h2>Staff Application</h2>
 
-      <label class="x-label">
-        Email
-        <input class="x-input" type="email" name="email" required />
-      </label>
-
-      <label class="x-label">
-        Discord Username
-        <input class="x-input" type="text" name="discord" placeholder="user#0000" required />
-      </label>
-
-      <label class="x-label">
-        Role you’re applying for
-        <select class="x-input" name="role" required>
+    <form id="applyForm" class="x-form">
+      <label class="x-label">Role
+        <select class="x-input" id="role" required>
           <option value="">Select one</option>
           <option>Developer</option>
           <option>Designer</option>
@@ -181,24 +54,22 @@ a {
         </select>
       </label>
 
-      <label class="x-label">
-        Why do you want to join Project X?
-        <textarea class="x-input x-textarea" name="message" rows="5" required></textarea>
+      <label class="x-label">Why should we accept you?
+        <textarea class="x-input" id="message" rows="6" required placeholder="Be specific. 'I'm active' is not a skill."></textarea>
       </label>
 
-      <button class="x-button x-button-primary" type="submit">
-        Submit Application
-      </button>
+      <div class="x-row">
+        <button class="x-button" type="submit">Submit</button>
+        <a class="x-button x-button-ghost" href="./dashboard.html">Dashboard</a>
+      </div>
 
-      <p class="x-form-note" id="formStatus"></p>
+      <p class="x-muted" id="applyStatus" style="margin-top:10px;"></p>
     </form>
   </section>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase-client.js"></script>
 <script src="./apply.js" defer></script>
-
-
 </body>
-<script src="./x-main.js" defer></script>
-
 </html>

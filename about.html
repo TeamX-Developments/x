@@ -1,168 +1,45 @@
-<html>
-  <head>
-    <title>PX-OS | About</title>
-<style>
-/* ===== Root variables ===== */
-:root {
-  --x-bg: #0e0f13;
-  --x-card: #151821;
-  --x-border: #222633;
-  --x-text: #ffffff;
-  --x-text-muted: #9aa0a6;
-  --x-accent: #6cf;
-}
+<!DOCTYPE html>
+<html lang="en" class="x-app">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PX-OS | About</title>
 
-/* ===== Base ===== */
-html, body {
-  margin: 0;
-  padding: 0;
-  background: var(--x-bg);
-  color: var(--x-text);
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-}
+  <link rel="stylesheet" href="./x-layout.css" />
+  <link rel="stylesheet" href="./x-components.css" />
+  <link rel="stylesheet" href="./x-forms.css" />
+  <link rel="stylesheet" href="./x-icons.css" />
+  <link rel="stylesheet" href="./x-animations.css" />
+  <link rel="stylesheet" href="./x-styles.css" />
+</head>
 
-/* ===== Layout ===== */
-.x-container {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-/* ===== Navbar ===== */
-.x-navbar {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  height: 56px;
-  padding: 0 20px;
-
-  background: var(--x-bg);
-  border-bottom: 1px solid var(--x-border);
-}
-
-.x-navbar-left {
-  position: absolute;
-  left: 20px;
-}
-
-.x-navbar-center {
-  display: flex;
-  gap: 18px;
-}
-
-.x-navbar-brand {
-  font-weight: 600;
-  font-size: 1rem;
-}
-
-/* ===== Nav links ===== */
-.x-nav-link {
-  text-decoration: none;
-  font-size: 0.9rem;
-  color: var(--x-text-muted);
-
-  padding: 6px 8px;
-  border-radius: 6px;
-
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-.x-nav-link:hover {
-  color: var(--x-text);
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.x-nav-link.active,
-.x-nav-link.x-accent {
-  color: var(--x-accent);
-}
-
-/* ===== Cards ===== */
-.x-card {
-  background: var(--x-card);
-  border: 1px solid var(--x-border);
-  border-radius: 10px;
-  padding: 20px;
-}
-
-.x-highlight {
-  border-color: var(--x-accent);
-}
-
-/* ===== Lists ===== */
-.x-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.x-list li {
-  padding: 10px 0;
-  border-bottom: 1px solid var(--x-border);
-}
-
-.x-list li:last-child {
-  border-bottom: none;
-}
-
-/* ===== Typography ===== */
-h1, h2 {
-  margin: 0 0 10px 0;
-  font-weight: 600;
-}
-
-p {
-  margin: 0;
-  color: var(--x-text-muted);
-}
-
-a {
-  color: var(--x-accent);
-}
-</style>
-
-  </head>
-<body>
-    <nav class="x-navbar">
-  <div class="x-navbar-left">
-    <span class="x-navbar-brand">Project X</span>
-  </div>
-
-  <div class="x-navbar-center">
-    <a class="x-nav-link" href="./index.html">Home</a>
-    <a class="x-nav-link" href="./about.html">About</a>
-    <a class="x-nav-link" href="./docs.html">Docs</a>
-    <a class="x-nav-link" href="./support.html">Support</a>
-    <a class="x-nav-link x-accent" href="./apply.html">Apply</a>
+<body class="x-app">
+<nav class="x-navbar">
+  <div class="x-navbar-inner">
+    <div class="x-navbar-left">
+      <span class="x-navbar-brand">Project X</span>
+    </div>
+    <div class="x-navbar-center">
+      <a class="x-nav-link" href="./index.html">Home</a>
+      <a class="x-nav-link" href="./about.html">About</a>
+      <a class="x-nav-link" href="./docs.html">Docs</a>
+      <a class="x-nav-link" href="./support.html">Support</a>
+      <a class="x-nav-link x-accent" href="./apply.html">Apply</a>
+    </div>
   </div>
 </nav>
+
 <main class="x-container">
   <section class="x-card">
-    <h1>About Project X</h1>
-
-    <p>
-      Project X – OS (PX-OS) is a virtual Windows / Node inline system
-      designed to simplify Discord bot creation and automation.
+    <h1>About</h1>
+    <p class="x-muted">
+      Project X - OS (PX-OS) is a virtual windows/node inline system that helps with discord bot creation and so much more to follow.
     </p>
-
-    <p>
-      It provides a structured environment for building, running,
-      and managing bots without unnecessary setup friction.
-      PX-OS focuses on flexibility, modularity, and developer control.
+    <p class="x-muted" style="margin-top:10px;">
+      The goal is a structured environment where you can build, run, and manage bots with less setup friction and more control.
     </p>
   </section>
 </main>
 
-
 </body>
-<script src="./x-main.js" defer></script>
-
 </html>

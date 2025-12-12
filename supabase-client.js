@@ -1,3 +1,7 @@
+// supabase-client.js
+// Put your Supabase project URL + anon key here.
+// IMPORTANT: Use the ANON key (safe for browsers). Never put service_role keys in a public website.
+const SUPABASE_URL = "https://YOUR_PROJECT_REF.supabase.co";
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
 
-// Create a single supabase client for interacting with your database
-window.sb  = createClient('https://qopgwxlrdqjyamerllwz.supabase.co', 'sb_publishable_HYgmuRFRreMN0le5UX26PA_Nkbul_ae')
+window.sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
