@@ -44,11 +44,24 @@
     <p class="x-muted">Loading user…</p>
   </section>
 
-  <section class="x-card">
-    <h2>Status</h2>
-    <p class="x-muted">PX-OS environment ready (placeholder).</p>
-  </section>
-</main>
+<section class="x-card">
+  <h2>OS Live</h2>
+  <p class="x-muted">Realtime connection: <span id="rtStatus">starting…</span></p>
+  <p class="x-muted">Local time: <span id="liveClock">--:--:--</span></p>
+</section>
+
+<section class="x-card">
+  <h2>Online Users</h2>
+  <p class="x-muted"><span id="onlineCount">0</span> online right now</p>
+  <ul id="onlineList" class="x-list" style="margin-top:10px;"></ul>
+</section>
+
+<section class="x-card">
+  <h2>Your Applications</h2>
+  <p class="x-muted">Live updates when your application changes.</p>
+  <ul id="appFeed" class="x-list" style="margin-top:10px;"></ul>
+</section>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./supabase-client.js"></script>
