@@ -1,175 +1,295 @@
-<!DOCTYPE html>
-<html lang="en" class="x-app">
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PX-OS | Dashboard</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Project X Dashboard</title>
+  <style>
+    :root{
+      --bg1:#0b1020; --bg2:#070a12;
+      --card:rgba(255,255,255,.06);
+      --bd:rgba(255,255,255,.12);
+      --txt:rgba(255,255,255,.92);
+      --mut:rgba(255,255,255,.70);
+      --ok:rgba(34,197,94,.95);
+      --bad:rgba(239,68,68,.95);
+      --warn:rgba(245,158,11,.95);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh; color:var(--txt); font-family:system-ui;
+      background:
+        radial-gradient(1100px 800px at 15% 20%, rgba(125,211,252,.18), transparent 55%),
+        radial-gradient(900px 700px at 80% 70%, rgba(167,139,250,.16), transparent 55%),
+        linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 100%);
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:20px}
+    .top{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+      padding:16px;border:1px solid var(--bd);
+      background:linear-gradient(180deg,var(--card),rgba(255,255,255,.03));
+      border-radius:18px;backdrop-filter:blur(10px);box-shadow:0 18px 55px rgba(0,0,0,.45)
+    }
+    .title{font-weight:950;font-size:18px}
+    .muted{color:var(--mut);font-size:12px;line-height:1.4}
+    .pill{
+      padding:6px 10px;border-radius:999px;border:1px solid var(--bd);
+      background:rgba(255,255,255,.05);font-size:12px;display:inline-flex;gap:8px;align-items:center
+    }
+    .dot{width:10px;height:10px;border-radius:999px;background:rgba(255,255,255,.25)}
+    .dot.ok{background:var(--ok)}
+    .dot.bad{background:var(--bad)}
+    .dot.warn{background:var(--warn)}
 
-  <link rel="stylesheet" href="./x-layout.css" />
-  <link rel="stylesheet" href="./x-components.css" />
-  <link rel="stylesheet" href="./x-forms.css" />
-  <link rel="stylesheet" href="./x-icons.css" />
-  <link rel="stylesheet" href="./x-animations.css" />
-  <link rel="stylesheet" href="./x-styles.css" />
+    .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:14px}
+    @media (max-width: 980px){.grid{grid-template-columns:1fr}}
+    .card{
+      border:1px solid var(--bd);
+      background:linear-gradient(180deg,var(--card),rgba(255,255,255,.03));
+      border-radius:18px;padding:14px;backdrop-filter:blur(10px);box-shadow:0 18px 55px rgba(0,0,0,.35)
+    }
+    .card h3{margin:0;font-size:14px;font-weight:950}
+    .kv{margin-top:10px;display:grid;grid-template-columns:150px 1fr;gap:8px;font-size:12px}
+    .k{color:var(--mut)}
+    .v{overflow-wrap:anywhere}
+
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    button{
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+      color:var(--txt); padding:10px 12px;border-radius:12px;font-weight:900;cursor:pointer
+    }
+    button.primary{
+      background:linear-gradient(180deg, rgba(99,102,241,.45), rgba(34,197,94,.18));
+      border-color:rgba(99,102,241,.55)
+    }
+    button:disabled{opacity:.45;cursor:not-allowed}
+
+    pre{
+      margin:10px 0 0;border:1px solid var(--bd);background:rgba(0,0,0,.18);
+      border-radius:14px;padding:12px;max-height:280px;overflow:auto;font-size:12px;white-space:pre-wrap
+    }
+    details summary{cursor:pointer;color:var(--mut);font-size:12px;margin-top:10px}
+    code{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+  </style>
 </head>
-
-<body class="x-app">
-
-  <nav class="x-navbar">
-    <div class="x-navbar-inner">
-      <div class="x-navbar-left">
-        <span class="x-navbar-brand">Project X</span>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <div class="title">Project X Dashboard</div>
+        <div class="muted">
+          Talking to <code id="baseUrlText">http://localhost:3301</code> • Endpoints: <code>/health</code>, <code>/v2/</code>, <code>/v2/stats</code>, <code>/v2/updates</code>
+        </div>
       </div>
-      <div class="x-navbar-center">
-        <a class="x-nav-link" href="./index.html">Home</a>
-        <a class="x-nav-link" href="./about.html">About</a>
-        <a class="x-nav-link" href="./docs.html">Docs</a>
-        <a class="x-nav-link" href="./support.html">Support</a>
-        <a class="x-nav-link x-accent" href="./apply.html">Apply</a>
-      </div>
-      <div class="x-navbar-right">
-        <button class="x-button x-button-ghost" id="logoutBtn" type="button">Logout</button>
+      <div class="pill" id="overallPill"><span class="dot" id="overallDot"></span><span id="overallText">checking…</span></div>
+      <div class="actions">
+        <button class="primary" id="refreshBtn">Refresh now</button>
+        <button id="toggleAutoBtn">Auto: on</button>
       </div>
     </div>
-  </nav>
 
-  <div class="x-os">
-    <!-- OS SIDE -->
-    <aside class="x-os-side" id="osSide">
-      <div class="x-os-side-top">
-        <div class="x-os-badge">
-          <div class="x-os-dot"></div>
-          <div>
-            <div class="x-os-title">PX-OS</div>
-            <div class="x-muted x-small">Realtime: <span id="rtStatus">starting…</span></div>
-          </div>
+    <div class="grid">
+      <div class="card">
+        <h3>Health</h3>
+        <div class="kv">
+          <div class="k">HTTP</div><div class="v" id="healthHttp">--</div>
+          <div class="k">Service</div><div class="v" id="healthService">--</div>
+          <div class="k">Port</div><div class="v" id="healthPort">--</div>
+          <div class="k">v2 name</div><div class="v" id="v2Name">--</div>
+          <div class="k">v2 version</div><div class="v" id="v2Version">--</div>
         </div>
-
-        <div class="x-os-mini">
-          <div class="x-muted x-small">Local time</div>
-          <div class="x-os-clock" id="liveClock">--:--:--</div>
-        </div>
+        <details>
+          <summary>Raw JSON</summary>
+          <pre id="healthRaw">--</pre>
+          <pre id="v2Raw">--</pre>
+        </details>
       </div>
 
-      <nav class="x-os-nav">
-        <button class="x-os-item active" data-view="view-overview">Overview</button>
-        <button class="x-os-item" data-view="view-live">OS Live</button>
-        <button class="x-os-item" data-view="view-apps">Applications</button>
-        <button class="x-os-item" data-view="view-profile">Profile</button>
-      </nav>
-
-      <div class="x-os-side-bottom">
-        <div class="x-os-stat">
-          <div class="x-muted x-small">Online</div>
-          <div class="x-os-stat-num"><span id="onlineCount">0</span></div>
+      <div class="card">
+        <h3>Stats</h3>
+        <div class="kv">
+          <div class="k">Now</div><div class="v" id="statsNow">--</div>
+          <div class="k">Uptime</div><div class="v" id="statsUptime">--</div>
+          <div class="k">Node</div><div class="v" id="statsNode">--</div>
+          <div class="k">Host</div><div class="v" id="statsHost">--</div>
+          <div class="k">Memory</div><div class="v" id="statsMem">--</div>
+          <div class="k">Loadavg</div><div class="v" id="statsLoad">--</div>
         </div>
-
-        <button class="x-button x-button-ghost x-os-collapse" id="collapseSide" type="button">
-          Collapse
-        </button>
+        <details>
+          <summary>Raw JSON</summary>
+          <pre id="statsRaw">--</pre>
+        </details>
       </div>
-    </aside>
 
-    <!-- MAIN WORKSPACE -->
-    <main class="x-os-main">
-      <!-- OVERVIEW -->
-      <section class="x-os-view active" id="view-overview">
-        <div class="x-card">
-          <h1>Dashboard</h1>
-          <p class="x-muted">Now it looks like an OS. You’re welcome.</p>
+      <div class="card">
+        <h3>Updates</h3>
+        <div class="kv">
+          <div class="k">OK</div><div class="v" id="updatesOk">--</div>
+          <div class="k">Note</div><div class="v" id="updatesNote">--</div>
         </div>
-<section class="x-card">
-  <h2>OS Status</h2>
+        <details>
+          <summary>Raw JSON</summary>
+          <pre id="updatesRaw">--</pre>
+        </details>
+        <div class="muted" style="margin-top:10px">
+          If you’re trying to “install updates” from here, remember: your updater install is IPC in the app, not an HTTP file-writer.
+        </div>
+      </div>
+    </div>
 
-  <div class="x-status-grid" style="margin-top:12px;">
-    <!-- OS -->
-    <div class="x-status-item"><div class="x-muted x-small">Platform</div><div id="osPlatform" class="x-status-val">--</div></div>
-    <div class="x-status-item"><div class="x-muted x-small">Release</div><div id="osRelease" class="x-status-val">--</div></div>
-    <div class="x-status-item"><div class="x-muted x-small">Arch</div><div id="osArch" class="x-status-val">--</div></div>
-    <div class="x-status-item"><div class="x-muted x-small">Hostname</div><div id="osHostname" class="x-status-val">--</div></div>
-    <div class="x-status-item"><div class="x-muted x-small">Uptime</div><div id="osUptime" class="x-status-val">--</div></div>
-    <div class="x-status-item"><div class="x-muted x-small">Load Avg</div><div id="osLoadavg" class="x-status-val">--</div></div>
-    <div class="x-status-item"><div class="x-muted x-small">Cores</div><div id="osCores" class="x-status-val">--</div></div>
-    <div class="x-status-item"><div class="x-muted x-small">CPU Model</div><div id="osCpuModel" class="x-status-val">--</div></div>
-
-    <!-- Memory -->
-    <div class="x-status-item"><div class="x-muted x-small">Memory Total</div><div id="memTotal" class="x-status-val">--</div></div>
-    <div class="x-status-item"><div class="x-muted x-small">Memory Free</div><div id="memFree" class="x-status-val">--</div></div>
-    <div class="x-status-item"><div class="x-muted x-small">Electron RSS</div><div id="procRss" class="x-status-val">--</div></div>
-    <div class="x-status-item"><div class="x-muted x-small">Heap Used</div><div id="procHeapUsed" class="x-status-val">--</div></div>
-    <div class="x-status-item"><div class="x-muted x-small">Heap Total</div><div id="procHeapTotal" class="x-status-val">--</div></div>
-
-    <!-- CPU -->
-    <div class="x-status-item"><div class="x-muted x-small">Process CPU</div><div id="procCpu" class="x-status-val">--</div></div>
-    <div class="x-status-item"><div class="x-muted x-small">Stats API</div><div id="statsApi" class="x-status-val">--</div></div>
+    <div class="card" style="margin-top:12px">
+      <h3>Debug</h3>
+      <div class="muted">If this says “blocked”, you opened this over HTTPS and the browser is blocking HTTP localhost calls. Humans invented that too.</div>
+      <pre id="debugLog"></pre>
+    </div>
   </div>
 
-  <details style="margin-top:12px;">
-    <summary class="x-muted">Raw JSON</summary>
-    <pre id="statsRaw" class="x-muted" style="white-space:pre-wrap;margin:10px 0 0;">--</pre>
-  </details>
-</section>
+  <script>
+    // Primary target
+    const BASES = [
+      "https://localhost:3301",
+      "https://127.0.0.1:3301"
+    ];
 
-      </section>
+    const $ = (id) => document.getElementById(id);
 
-      <!-- LIVE -->
-      <section class="x-os-view" id="view-live">
-        <div class="x-card">
-          <h2>Online Users</h2>
-          <ul id="onlineList" class="x-list" style="margin-top:10px;"></ul>
-        </div>
+    const debugLog = $("debugLog");
+    const refreshBtn = $("refreshBtn");
+    const toggleAutoBtn = $("toggleAutoBtn");
 
-        <div class="x-card">
-          <h2>Realtime Feed</h2>
-          <p class="x-muted">Live updates from the database.</p>
-          <ul id="appFeed" class="x-list" style="margin-top:10px;"></ul>
-        </div>
-      </section>
+    const overallDot = $("overallDot");
+    const overallText = $("overallText");
 
-      <!-- APPLICATIONS -->
-      <section class="x-os-view" id="view-apps">
-        <div class="x-card">
-          <h2>Your Applications</h2>
-          <p class="x-muted">This updates live when your application changes.</p>
-          <ul id="appFeed2" class="x-list" style="margin-top:10px;"></ul>
-        </div>
-      </section>
+    let auto = true;
+    let timer = null;
 
-      <!-- PROFILE -->
-      <section class="x-os-view" id="view-profile">
-        <section class="x-card" id="userCard">
-          <h2>Account</h2>
+    function log(msg){
+      const t = new Date().toLocaleTimeString();
+      debugLog.textContent += `[${t}] ${msg}\n`;
+      debugLog.scrollTop = debugLog.scrollHeight;
+    }
 
-          <p class="x-muted" id="profileLine">Loading user…</p>
+    function setOverall(state, text){
+      overallDot.classList.remove("ok","bad","warn");
+      if (state) overallDot.classList.add(state);
+      overallText.textContent = text;
+    }
 
-          <div class="x-row" style="margin-top:12px;">
-            <button class="x-button x-button-ghost" id="editProfileBtn" type="button">
-              Edit Profile
-            </button>
-          </div>
+    function fmtUptime(sec){
+      const n = Number(sec);
+      if (!Number.isFinite(n)) return "--";
+      const s = Math.max(0, Math.floor(n));
+      const h = Math.floor(s / 3600);
+      const m = Math.floor((s % 3600) / 60);
+      const r = s % 60;
+      return `${h}h ${m}m ${r}s`;
+    }
 
-          <div id="editProfileSection" style="display:none; margin-top:14px;">
-            <form id="editProfileForm" class="x-form">
-              <label class="x-label">Username
-                <input class="x-input" id="editUsername" type="text" placeholder="New username" required />
-              </label>
+    function fmtBytes(b){
+      const n = Number(b);
+      if (!Number.isFinite(n)) return "--";
+      if (n > 1024**3) return (n/(1024**3)).toFixed(2) + " GB";
+      return (n/(1024**2)).toFixed(0) + " MB";
+    }
 
-              <div class="x-row">
-                <button class="x-button" type="submit">Save</button>
-                <button class="x-button x-button-ghost" id="cancelEditBtn" type="button">Cancel</button>
-              </div>
+    async function fetchJson(url){
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    }
 
-              <p class="x-muted" id="editStatus" style="margin-top:10px;"></p>
-            </form>
-          </div>
-        </section>
-      </section>
-    </main>
-  </div>
+    async function tryBases(path){
+      const start = performance.now();
+      let lastErr = null;
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./supabase-client.js"></script>
-  <script src="./dashboard.js" defer></script>
+      for (const base of BASES){
+        try{
+          const data = await fetchJson(base + path);
+          const ms = Math.round(performance.now() - start);
+          return { ok:true, base, data, ms };
+        }catch(e){
+          lastErr = e;
+        }
+      }
+      return { ok:false, error: lastErr ? (lastErr.message || String(lastErr)) : "failed" };
+    }
+
+    async function refreshAll(){
+      refreshBtn.disabled = true;
+      setOverall("warn", "checking…");
+
+      try{
+        // Health
+        const health = await tryBases("/health");
+        if (!health.ok) throw new Error(`health failed: ${health.error}`);
+
+        $("baseUrlText").textContent = health.base;
+
+        $("healthHttp").textContent = `ok (${health.ms} ms)`;
+        $("healthService").textContent = health.data.service ?? "--";
+        $("healthPort").textContent = health.data.port ?? "--";
+        $("healthRaw").textContent = JSON.stringify(health.data, null, 2);
+
+        // v2 root
+        const v2 = await tryBases("/v2/");
+        if (!v2.ok) throw new Error(`v2 root failed: ${v2.error}`);
+        $("v2Name").textContent = v2.data.name ?? "--";
+        $("v2Version").textContent = v2.data.version ?? "--";
+        $("v2Raw").textContent = JSON.stringify(v2.data, null, 2);
+
+        // Stats
+        const stats = await tryBases("/v2/stats");
+        if (!stats.ok) throw new Error(`stats failed: ${stats.error}`);
+        $("statsRaw").textContent = JSON.stringify(stats.data, null, 2);
+
+        $("statsNow").textContent = stats.data.now ?? "--";
+        $("statsUptime").textContent = fmtUptime(stats.data.uptime_sec);
+        $("statsNode").textContent = stats.data.node ?? "--";
+        $("statsHost").textContent = stats.data.host?.hostname ?? "--";
+
+        const mem = stats.data.memory || {};
+        $("statsMem").textContent =
+          `rss ${fmtBytes(mem.rss)} • heap ${fmtBytes(mem.heap_used)} / ${fmtBytes(mem.heap_total)}`;
+
+        const load = stats.data.host?.loadavg;
+        $("statsLoad").textContent = Array.isArray(load) ? load.map(n => Number(n).toFixed(2)).join(" / ") : (load ?? "--");
+
+        // Updates
+        const upd = await tryBases("/v2/updates");
+        if (!upd.ok) throw new Error(`updates failed: ${upd.error}`);
+        $("updatesRaw").textContent = JSON.stringify(upd.data, null, 2);
+        $("updatesOk").textContent = String(!!upd.data.ok);
+        $("updatesNote").textContent = upd.data.updater?.note ?? upd.data.updater?.ui ?? "--";
+
+        setOverall("ok", "online");
+        log(`Refresh ok via ${health.base}`);
+      }catch(e){
+        setOverall("bad", "offline / blocked");
+        log(String(e?.message || e));
+      }finally{
+        refreshBtn.disabled = false;
+      }
+    }
+
+    refreshBtn.onclick = refreshAll;
+
+    toggleAutoBtn.onclick = () => {
+      auto = !auto;
+      toggleAutoBtn.textContent = auto ? "Auto: on" : "Auto: off";
+      if (auto){
+        refreshAll();
+        timer = setInterval(refreshAll, 2500);
+      } else {
+        clearInterval(timer);
+        timer = null;
+      }
+    };
+
+    // start
+    log("Dashboard loaded.");
+    refreshAll();
+    timer = setInterval(refreshAll, 2500);
+  </script>
 </body>
-
 </html>
