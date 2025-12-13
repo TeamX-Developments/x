@@ -15,7 +15,7 @@
         <div class="logo">X</div>
         <div>
           <div class="name">The X Project</div>
-          <div class="tag">GitHub-hosted site: releases embedded in <span class="code">index.html</span>, plus Discord login.</div>
+          <div class="tag">Releases + About + Discord login, hosted on GitHub Pages.</div>
         </div>
       </div>
       <div class="nav">
@@ -28,7 +28,9 @@
     <div class="grid">
       <div class="card">
         <h1>Releases</h1>
-        <p class="muted">Embedded. No API calls. No excuses.</p>
+        <p class="muted">
+          Source: <a class="asset" href="https://github.com/TeamX-Developments/The-X-Project/releases" target="_blank" rel="noopener">GitHub Releases</a>
+        </p>
         <div id="releaseList" class="row" style="flex-direction:column; gap:12px; margin-top:14px;"></div>
       </div>
 
@@ -40,51 +42,32 @@
           <a class="btn ghost" href="https://discord.com/developers/applications" target="_blank" rel="noopener">Discord App</a>
         </div>
         <p class="muted" style="margin-top:10px;">
-          Static hosting means no server-side token exchange. This uses the OAuth2 implicit flow.
+          Redirect URI: <span class="code" id="redir"></span>
         </p>
         <p class="muted">
-          Redirect URI this page expects: <span class="code" id="redir"></span>
+          Static hosting uses implicit grant (token in URL fragment). If you insist on response_type=code, you need a backend to call the token endpoint.
         </p>
       </div>
     </div>
 
-    <div class="footer">© 2025 The X Project. Some assembly required.</div>
+    <div class="footer">© 2025 The X Project. Minimalism by necessity.</div>
   </div>
 
+  <!-- Embedded fallback releases (keeps “embed releases in index.html” true) -->
   <script id="embedded-releases" type="application/json">[
   {
-    "tag": "v1.2.0",
-    "date": "2025-12-12",
-    "title": "Updater pipeline polish",
-    "notes": "- Update feed + creator tooling\n- Installer chunking improvements\n- Auth flow refinements",
-    "assets": [
-      {
-        "name": "TheXProject-Setup-1.2.0.exe",
-        "url": "#"
-      },
-      {
-        "name": "TheXProject-1.2.0.zip",
-        "url": "#"
-      }
-    ]
-  },
-  {
-    "tag": "v1.1.0",
-    "date": "2025-11-30",
-    "title": "Discord login + dashboard",
-    "notes": "- Discord login\n- Session/user display",
-    "assets": [
-      {
-        "name": "TheXProject-1.1.0.zip",
-        "url": "#"
-      }
-    ]
+    "tag": "v0.0.0",
+    "date": "2025-12-13",
+    "title": "Embedded fallback",
+    "notes": "This is embedded in index.html. The site also tries to load live releases from GitHub.",
+    "assets": []
   }
 ]</script>
+
   <script>
-    XP.renderReleases();
-    XP.wireAuthUI();
     document.getElementById("redir").textContent = XP.redirectUri();
+    XP.loadReleases();
+    XP.wireAuthUI();
   </script>
 </body>
 </html>

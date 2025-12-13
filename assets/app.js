@@ -6,29 +6,58 @@
   const ME_KEY = "xp_discord_me";
 
   function basePath(){
-    // Works for https://user.github.io/repo/ and for custom domains
-    const p = location.pathname;
-    // If we're on /something/page/index.html, base is /something/page/
-    return p.endsWith(".html") ? p.replace(/[^/]+$/, "") : (p.endsWith("/") ? p : p + "/");
+    const bp = (cfg.BASE_PATH || "").trim();
+    if(!bp || bp === "/") return "";
+    return bp.startsWith("/") ? bp : ("/" + bp);
   }
 
   function redirectUri(){
-    return location.origin + basePath() + "auth/callback/";
+    return location.origin + basePath() + "/auth/collback/";
   }
 
   function setToken(tok){ sessionStorage.setItem(TOKEN_KEY, tok); }
   function getToken(){ return sessionStorage.getItem(TOKEN_KEY); }
-  function clearToken(){
-    sessionStorage.removeItem(TOKEN_KEY);
-    sessionStorage.removeItem(ME_KEY);
+  function clearToken(){ sessionStorage.removeItem(TOKEN_KEY); sessionStorage.removeItem(ME_KEY); }
+
+  async function fetchMe(){
+    const tok = getToken();
+    if(!tok) return null;
+
+    const cached = sessionStorage.getItem(ME_KEY);
+    if(cached){ try { return JSON.parse(cached); } catch {} }
+
+    const r = await fetch("https://discord.com/api/users/@me", {
+      headers: { "Authorization": `Bearer ${tok}` }
+    });
+    if(!r.ok) return null;
+    const me = await r.json();
+    sessionStorage.setItem(ME_KEY, JSON.stringify(me));
+    return me;
+  }
+
+  function loginUrl(){
+    if(!clientId) throw new Error("Missing DISCORD_CLIENT_ID in assets/config.js");
+
+    const stateBytes = crypto.getRandomValues(new Uint8Array(16));
+    const stateStr = btoa(String.fromCharCode(...stateBytes)).replace(/=+$/,"");
+    sessionStorage.setItem("xp_oauth_state", stateStr);
+
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUri(),
+      response_type: "token",   // implicit grant for static hosting
+      scope: scopes,
+      state: stateStr,
+      prompt: "consent"
+    });
+
+    return "https://discord.com/oauth2/authorize?" + params.toString();
   }
 
   function outMe(el, me){
     if(!el) return;
-    if(!me){
-      el.textContent = "Not logged in.";
-      return;
-    }
+    if(!me){ el.textContent = "Not logged in."; return; }
+
     const wrap = document.createElement("div");
     wrap.className = "who";
 
@@ -43,9 +72,11 @@
     const name = document.createElement("div");
     name.className = "whoName";
     name.textContent = `${me.username}#${me.discriminator || "0000"}`;
+
     const muted = document.createElement("div");
     muted.className = "muted";
     muted.textContent = me.email ? me.email : "Logged in via Discord";
+
     info.appendChild(name);
     info.appendChild(muted);
 
@@ -56,64 +87,42 @@
     el.appendChild(wrap);
   }
 
-  async function fetchMe(){
-    const tok = getToken();
-    if(!tok) return null;
-
-    // cached
-    const cached = sessionStorage.getItem(ME_KEY);
-    if(cached){
-      try { return JSON.parse(cached); } catch {}
-    }
-
-    const r = await fetch("https://discord.com/api/users/@me", {
-      headers: { "Authorization": `Bearer ${tok}` }
-    });
-    if(!r.ok) return null;
-    const me = await r.json();
-    sessionStorage.setItem(ME_KEY, JSON.stringify(me));
-    return me;
-  }
-
-  function loginUrl(){
-    if(!clientId) throw new Error("Missing DISCORD_CLIENT_ID in assets/config.js");
-    const state = crypto.getRandomValues(new Uint8Array(16));
-    const stateStr = btoa(String.fromCharCode(...state)).replace(/=+$/,"");
-    sessionStorage.setItem("xp_oauth_state", stateStr);
-
-    const params = new URLSearchParams({
-      client_id: clientId,
-      redirect_uri: redirectUri(),
-      response_type: "token", // implicit grant
-      scope: scopes,
-      state: stateStr,
-      prompt: "consent"
-    });
-
-    return "https://discord.com/api/oauth2/authorize?" + params.toString();
-  }
-
   function getEmbeddedReleases(){
     const node = document.getElementById("embedded-releases");
     if(!node) return [];
     try { return JSON.parse(node.textContent || "[]"); } catch { return []; }
   }
 
-  function renderReleases(){
+  function normalizeRelease(r){
+    return {
+      tag: r.tag_name || r.tag || "v0.0.0",
+      title: r.name || r.title || "",
+      date: (r.published_at || r.date || "").slice(0, 10),
+      notes: r.body || r.notes || "",
+      url: r.html_url || r.url || "",
+      assets: (r.assets || []).map(a => ({
+        name: a.name,
+        url: a.browser_download_url || a.url || "#"
+      }))
+    };
+  }
+
+  function renderReleases(releases){
     const list = document.getElementById("releaseList");
     if(!list) return;
-    const releases = getEmbeddedReleases();
-    list.innerHTML = "";
 
-    if(!releases.length){
+    list.innerHTML = "";
+    if(!releases || !releases.length){
       const p = document.createElement("div");
       p.className = "muted";
-      p.textContent = "No releases embedded yet. Edit the JSON inside index.html.";
+      p.textContent = "No releases found.";
       list.appendChild(p);
       return;
     }
 
-    for(const r of releases){
+    for(const r0 of releases){
+      const r = normalizeRelease(r0);
+
       const card = document.createElement("div");
       card.className = "release";
 
@@ -123,7 +132,7 @@
       const left = document.createElement("div");
       const tag = document.createElement("div");
       tag.className = "relTag";
-      tag.textContent = `${r.tag || "v0.0.0"}  •  ${r.title || ""}`.trim();
+      tag.textContent = `${r.tag}  •  ${r.title}`.trim();
       const meta = document.createElement("div");
       meta.className = "relMeta";
       meta.textContent = r.date ? `Published: ${r.date}` : "";
@@ -132,19 +141,21 @@
 
       const right = document.createElement("div");
       right.className = "relMeta";
-      right.textContent = (r.assets && r.assets.length) ? `${r.assets.length} asset(s)` : "";
+      right.textContent = r.assets.length ? `${r.assets.length} asset(s)` : "";
 
       top.appendChild(left);
       top.appendChild(right);
 
-      const notes = document.createElement("div");
-      notes.className = "relNotes";
-      notes.textContent = r.notes || "";
-
       card.appendChild(top);
-      if(r.notes) card.appendChild(notes);
 
-      if(r.assets && r.assets.length){
+      if(r.notes){
+        const notes = document.createElement("div");
+        notes.className = "relNotes";
+        notes.textContent = r.notes;
+        card.appendChild(notes);
+      }
+
+      if(r.assets.length){
         const assets = document.createElement("div");
         assets.className = "assetList";
         for(const a of r.assets){
@@ -157,10 +168,39 @@
           assets.appendChild(link);
         }
         card.appendChild(assets);
+      } else if (r.url) {
+        const assets = document.createElement("div");
+        assets.className = "assetList";
+        const link = document.createElement("a");
+        link.className = "asset";
+        link.href = r.url;
+        link.textContent = "View on GitHub";
+        link.target = "_blank";
+        link.rel = "noopener";
+        assets.appendChild(link);
+        card.appendChild(assets);
       }
 
       list.appendChild(card);
     }
+  }
+
+  async function loadReleases(){
+    // render embedded first
+    const embedded = getEmbeddedReleases();
+    if(embedded.length) renderReleases(embedded);
+
+    const owner = cfg.REPO_OWNER;
+    const repo = cfg.REPO_NAME;
+    if(!owner || !repo) return;
+
+    try{
+      const api = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/releases`;
+      const r = await fetch(api, { headers: { "Accept": "application/vnd.github+json" }});
+      if(!r.ok) return;
+      const j = await r.json();
+      if(Array.isArray(j) && j.length) renderReleases(j);
+    } catch {}
   }
 
   async function wireAuthUI(){
@@ -185,32 +225,13 @@
       if(btnDiscord) btnDiscord.textContent = "Login with Discord";
     }
 
-    // attach login
     if(btnDiscord){
-      btnDiscord.addEventListener("click", (e) => {
-        e.preventDefault();
-        location.href = loginUrl();
-      });
+      btnDiscord.addEventListener("click", (e)=>{ e.preventDefault(); location.href = loginUrl(); });
     }
-
-    // logout
     if(navLogout){
-      navLogout.addEventListener("click", (e) => {
-        e.preventDefault();
-        clearToken();
-        location.href = "./";
-      });
+      navLogout.addEventListener("click", (e)=>{ e.preventDefault(); clearToken(); location.href = basePath() + "/"; });
     }
   }
 
-  window.XP = {
-    loginUrl,
-    setToken,
-    getToken,
-    clearToken,
-    fetchMe,
-    renderReleases,
-    wireAuthUI,
-    redirectUri
-  };
+  window.XP = { loginUrl, redirectUri, setToken, getToken, clearToken, fetchMe, wireAuthUI, loadReleases };
 })();
