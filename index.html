@@ -1,76 +1,66 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en" class="x-app">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>The X Project</title>
-  <link rel="stylesheet" href="/x/assets/styles.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/x/assets/config.js"></script>
-  <script src="/x/assets/app.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PX-OS | Home</title>
+  <link rel="stylesheet" href="./x-layout.css" />
+  <link rel="stylesheet" href="./x-components.css" />
+  <link rel="stylesheet" href="./x-forms.css" />
+  <link rel="stylesheet" href="./x-icons.css" />
+  <link rel="stylesheet" href="./x-animations.css" />
+  <link rel="stylesheet" href="./x-styles.css" />
 </head>
-<body>
-  <div class="wrap">
-    <div class="top">
-      <div class="brand">
-        <div class="logo">X</div>
-        <div>
-          <div class="name">The X Project</div>
-          <div class="tag">Working Discord login (Supabase) + dashboard redirect.</div>
-        </div>
-      </div>
-      <div class="nav">
-        <a class="btn ghost" href="/x/about/">About</a>
-        <a class="btn ghost" href="/x/dashboard/" id="navDash" style="display:none;">Dashboard</a>
-        <a class="btn ghost" href="#" id="navLogin">Login</a>
-        <a class="btn ghost" href="#" id="navLogout" style="display:none;">Logout</a>
-      </div>
+<body class="x-app">
+<nav class="x-navbar">
+  <div class="x-navbar-inner">
+    <div class="x-navbar-left">
+      <span class="x-navbar-brand">Project X</span>
     </div>
-
-    <div class="grid">
-      <div class="card">
-        <h1>Releases</h1>
-        <p class="muted">
-          Source: <a class="asset" href="https://github.com/TeamX-Developments/The-X-Project/releases" target="_blank" rel="noopener">GitHub Releases</a>
-        </p>
-        <div id="releaseList" class="row" style="flex-direction:column; gap:12px; margin-top:14px;"></div>
-      </div>
-
-      <div class="card">
-        <h2>Account</h2>
-        <div id="meBox" class="muted">Loading…</div>
-
-        <div class="row" style="margin-top:12px;">
-          <a class="btn" href="#" id="btnDiscord">Login with Discord</a>
-          <a class="btn ghost" href="/x/dashboard/">Open Dashboard</a>
-          <a class="btn ghost" href="#" id="btnLogout" style="display:none;">Logout</a>
-        </div>
-
-        <hr/>
-
-        <p class="muted">Your Discord authorize URL (reference):</p>
-        <div class="code" id="authUrl"></div>
-      </div>
+    <div class="x-navbar-center">
+      <a class="x-nav-link" href="./index.html">Home</a>
+      <a class="x-nav-link" href="./about.html">About</a>
+      <a class="x-nav-link" href="./docs.html">Docs</a>
+      <a class="x-nav-link" href="./support.html">Support</a>
+      <a class="x-nav-link x-accent" href="./apply.html">Apply</a>
     </div>
-
-    <div class="footer">© 2025 The X Project. Humans asked for auth, so here we are.</div>
   </div>
+</nav>
 
-  <script id="embedded-releases" type="application/json">[
-  {
-    "tag": "embedded",
-    "date": "2025-12-13",
-    "title": "Embedded fallback",
-    "notes": "This is embedded in index.html. Page also loads live releases from GitHub.",
-    "assets": []
-  }
-]</script>
+<main class="x-container">
+  <section class="x-card">
+    <h1>Project X</h1>
+    <p class="x-muted">
+      PX-OS is actively developed and shipping updates. Latest releases are pulled directly from GitHub.
+    </p>
+    <div class="x-row" style="margin-top:12px;">
+      <a class="x-button x-button-ghost" href="./auth.html">Login / Register</a>
+      <a class="x-button x-button-ghost" href="./dashboard.html">Dashboard</a>
+    </div>
+  </section>
 
-  <script>
-    document.getElementById("navLogin").onclick = function(e){ e.preventDefault(); document.getElementById("btnDiscord").click(); };
-    document.getElementById("authUrl").textContent = XP.discordAuthorizeUrl();
-    XP.loadReleases();
-    XP.renderAuthBox();
-  </script>
+  <section class="x-card">
+    <h2>Download</h2>
+    <p id="downloadText" class="x-muted">Fetching latest release…</p>
+    <div class="x-row" style="margin-top:10px;">
+      <a id="downloadBtn" class="x-button" href="#" target="_blank" rel="noopener" style="display:none;">Download Latest</a>
+      <a class="x-button x-button-ghost" href="https://github.com/TeamX-Developments/The-X-Project/releases" target="_blank" rel="noopener">View all releases</a>
+    </div>
+  </section>
+
+  <section class="x-card">
+    <h2>Latest Releases</h2>
+    <ul id="releases" class="x-list"></ul>
+  </section>
+
+  <section class="x-card x-highlight">
+    <h2>We’re hiring staff!</h2>
+    <p class="x-muted">
+      Want to help build PX-OS? Submit an application now at <a href="./apply.html">Apply</a>.
+    </p>
+  </section>
+</main>
+
+<script src="./x-main.js" defer></script>
 </body>
 </html>
